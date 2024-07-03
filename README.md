@@ -15,4 +15,6 @@
 ## 2024.07.02 
 - Parallel Particles (P2): A Parallel Position Based Approach for Fast and Stable Simulation of Granular Materials 학습
 - Particle간의 Friction, Spring, Damping Constraint가 있는 간단한 PBD 구현.
+<img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/98a921a4-8c28-4ca6-ae0b-c2c96bdd20bd">
+  
 

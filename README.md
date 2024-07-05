@@ -26,4 +26,7 @@
 - PBD에 Adhesion Constraint 추가
 - 3D로 변환 후 테스트
 <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/f09882df-22f3-42fa-b1e6-9fbb6b805f82">
+
+## 2024.07.04
+- 멀티 렌더 타겟의 view position을 blur하는 방식으로 진흙같이 뭉쳐져 있는 느낌이 나게 구현
   

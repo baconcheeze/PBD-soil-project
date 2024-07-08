@@ -38,6 +38,7 @@
 
 
   - Diffuse
+    <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/530e57a3-85e5-462c-8fa5-aa3f7263ba92">
   - Fresnel
   - Glints
   - Porosity

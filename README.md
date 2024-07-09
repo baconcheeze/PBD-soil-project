@@ -37,6 +37,7 @@
 - 모래 (Granular Material)를 위한 PBR 이식
 
 
+
   - Diffuse
     <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/530e57a3-85e5-462c-8fa5-aa3f7263ba92">
   - Fresnel
@@ -49,6 +50,12 @@
     <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/3d51bcc3-ced5-4b5d-a3a0-b2530f790a75">
   - Combined
     <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/bfc5ee93-e6b6-407c-a04f-d23fe0d32ed6">
+
+## 2024.07.06
+- 모래 PBR을 PBD Particle 렌더링에 활용
+- PBD로직 Compute Shader로 옮기는 작업 진행중.
+  <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/e1417e3c-8ddf-4d7f-995f-b000ac2274fa">
+
 
 ## 2주차 목표
 - PBD GPU로 처리하게 이식

@@ -50,4 +50,10 @@
   - Combined
     <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/bfc5ee93-e6b6-407c-a04f-d23fe0d32ed6">
 
+## 2주차 목표
+- PBD GPU로 처리하게 이식
+- PBD Inner Particle Collision Detection (Continuous Collision Dectection, NeighborGrid Collision Detection)
+- PBD Particle <-> Rigid Body Interaction 구현
+- 흙 Particle이 떨어져서 풍차가 돌아가고, 쇠구슬이 떨어져서 쌓여있는 모래가 움푹 파이는 장면을 구현하는것이 목표.
+
   

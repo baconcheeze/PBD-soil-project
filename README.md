@@ -63,6 +63,10 @@
   -<img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/4a805bd7-8219-4ea4-b011-c29dab33951e">
   -<img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/39fcb1d7-a0f3-4775-9f82-1671eae4eb96">
 
+ - 물성을 조절하기 위해 수치를 변경하던 도중 문제점 확인.
+   - 정지마찰을 고정으로 줬을경우 (ie. 정지마찰계수 := 무한대 , delta = -velocity*tangent) 입자가 터져나가는 현상 확인  
+    <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/2a5e6a51-b304-41ed-80f4-624409df91fe">
+
 ## 2주차 목표
 - PBD GPU로 처리하게 이식
 - PBD Inner Particle Collision Detection (Continuous Collision Dectection, NeighborGrid Collision Detection)

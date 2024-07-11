@@ -78,34 +78,8 @@
 ## 2024.07.10
 -모래 물성이 반영된 Granular PBD 로직 1차 완성
   - 가장 핵심인 입자간의 Contact Resolution 처리 :
-  - 
-k = spring coefficient
-c = damper coefficient
-f_s=static friction coefficient
-f_d=dynamiic friction coefficient
-
-k_pb=  (∆t^2  k/m)/(1+∆t c/m+∆t^2  k/m)
-c_pb=  (∆t^2  k/m)/(1+∆t c/m+∆t^2  k/m)
-〖k^'〗_pb=1-c_pb  (1-α^(1⁄n))/(1-α)- α^(1⁄n)
-〖c^'〗_pb=c_pb  (1-α^(1⁄n))/(1-α)
-α=〖1- k〗_pb- c_pb
-
-rel_move=(x_i-x_(i_origin) )-(x_j-x_(j_origin )) 
-norm=  (x_i-x_j)/‖x_i-x_j ‖ 
-tangent= rel_move- rel_move∙ norm
-S= r_i+r_j- ‖x_i-x_j ‖   : Spring Delta
-D=  rel_move∙ tangent
-
-λ_norm= 〖k^'〗_pb* S+ 〖c^'〗_pb*D
-λ_adhesion= π〖r_i〗^2 (1-(S/r_i -1)^2 )  (∆t^2)⁄m_i 
-s=0.999
-s^'=1-〖(1-s)〗^(1/n)  
-
-
-
-λ_friction=  {█(-s^'* rel_move∙ tangent ∶ | rel_move∙ tangent|≤  f_s (|λ_norm |+|λ_adhesion |)@-s^'* rel_move∙ tangent*min⁡(1,|λ_norm |  +|λ_adhesion |  ) ∶else)┤
-
-∆x_i= -    (1/m_i )/(1/m_i +1/m_j )(λ_friction*tangent + λ_norm* norm-λ_adhesion/n*norm)
+  - <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/4cd9bc0c-dc01-48a5-961c-d2cefd6b1d0d"> 
+    
 
 
 

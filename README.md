@@ -84,7 +84,70 @@
 
 
 ```
+float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 origin0, float3 origin1, float radius0, float radius1, float massinv0, float massinv1
+	, float spring_coefficient, float damper_coefficient, float static_friction_coefficient, float kinetic_friction_coefficient, float adhesion_coefficient, int iteration_time 
+	, inout float3 normaldelta, inout float3 tangentdelta)
+{
+	float3 norm = normalize((pos0 - pos1));
+	float3 vel = (pos0 - origin0) - (pos1 - origin1);
 
+	float3 tangent = (vel - dot(vel, norm) * norm);
+
+	float d = length(tangent);
+
+	
+	if (d > 0.001)
+		tangent = tangent / d;
+
+	else
+		tangent = (float3)0.f;
+
+	float k = spring_coefficient;
+	float c = damper_coefficient;
+	float t = g_DT;
+
+
+	float delta_spring;
+	float delta_damper;
+
+	float beta = massinv0 / (massinv0 + massinv1);
+
+	delta_spring = -length(pos0 - pos1) + (radius0 + radius1);
+	delta_damper = -dot(vel, norm);
+
+
+
+	float k_pb = (t * t * k * massinv0) / (1.f + t * c * massinv0 + t * t * k * massinv0);
+	float c_pb = (t * c * massinv0) / (1.f + t * c * massinv0 + t * t * k * massinv0);
+
+	float alpha = 1.f - k_pb - c_pb;
+
+	float k_pbb = 1 - c_pb * (1 - pow(alpha, 1.f / iteration_time)) / (1 - alpha) - pow(alpha, 1.f / iteration_time);
+	float c_pbb = c_pb * (1 - pow(alpha, 1.f / iteration_time)) / (1 - alpha);
+
+	float lambda = dot(vel, tangent);
+	float lamda_normal_before = (k_pb * delta_spring + c_pb * delta_damper);
+	float lambda_normal = (k_pbb * delta_spring + c_pbb * delta_damper);
+
+	float Area = PI * radius0 * radius0 * (1 -  (positive(delta_spring) / radius0  - 1.f) * (positive(delta_spring) / radius0 - 1.f));
+	float Adhesion_Force = adhesion_coefficient * Area; // heuristic 힘계산, 정확하고 복잡한걸로 추후 수정 가능성 o
+
+	float lambda_adhesion = Adhesion_Force * g_DT * g_DT * massinv0;
+
+	float k_prime = 1 - pow((1 - 0.999), 1.f / iteration_time);	
+
+	float lambda_friction = abs(lambda) <= static_friction_coefficient * (abs(lambda_normal)+ lambda_adhesion)
+		? -k_prime * lambda : -k_prime * lambda * min(1.f, kinetic_friction_coefficient * (abs(lambda_normal) + lambda_adhesion));
+
+	normaldelta += beta * (lambda_normal - lambda_adhesion / iteration_time) * norm;
+	tangentdelta +=  beta* lambda_friction* tangent;
+
+	return beta * (lambda_friction * tangent + lambda_normal * norm - lambda_adhesion / iteration_time * norm);
+
+
+
+
+}
 ```
 
 

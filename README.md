@@ -164,7 +164,11 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
 - Granular 파티클과 상호작용할 Rigid Body와 Soft Body를 구현하기 위한 Extended Positional Dynamics 학습 및 구현중
   <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/a0b79324-3b7c-419d-b1e1-ec72c06d9d4e">
-  
+
+
+## 2024.07.11
+  - 위의 PBD로 RigidBody내 파티클들의 위치를 시뮬레이션 한 뒤 Shape Matching 및 Volume Preserving Constraint를 통해 RigidBody 형태를 유지시키는 방법이 성능적으로 한계가 있다고 생각해
+    Body에 통으로 XPBD를 적용시키는 <Detailed Rigid Body Simulation with Extended Position Based Dynamics> 학습 및 구현중    
      
 ## 2주차 목표
 - PBD GPU로 처리하게 이식

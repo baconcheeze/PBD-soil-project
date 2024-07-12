@@ -168,7 +168,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
 ## 2024.07.11
   - 위의 PBD로 RigidBody내 파티클들의 위치를 시뮬레이션 한 뒤 Shape Matching 및 Volume Preserving Constraint를 통해 RigidBody 형태를 유지시키는 방법이 성능적으로 한계가 있다고 생각해
-    Body에 통으로 XPBD를 적용시키는 <Detailed Rigid Body Simulation with Extended Position Based Dynamics> 학습 및 구현중    
+    Body에 통으로 XPBD를 적용시키기 위해 Detailed Rigid Body Simulation with Extended Position Based Dynamics 학습 및 구현중    
      
 ## 2주차 목표
 - PBD GPU로 처리하게 이식

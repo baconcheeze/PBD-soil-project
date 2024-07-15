@@ -82,6 +82,8 @@
 
      <img src="https://github.com/user-attachments/assets/ee8faacb-152a-47e3-8779-3db92fc54b29">  
 
+  
+  
   - 가장 핵심인 입자간의 Contact Resolution 처리 :
   - <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/4cd9bc0c-dc01-48a5-961c-d2cefd6b1d0d"> 
     
@@ -192,13 +194,22 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
    <img src="https://github.com/user-attachments/assets/46e01623-a67f-4ae6-b474-94bcf4cbcfc0">
 
+
+
 -  Solve Collision Logic
 
 
 <img src="https://github.com/user-attachments/assets/16758256-a37d-4371-a091-8defee3264e2">
             <img src="https://github.com/user-attachments/assets/3d7afff4-da46-435a-85d8-bc5c0b02454e">
             <img src="https://github.com/user-attachments/assets/5b396243-fa1f-4401-8431-e7502e0b5ddb">
-	  
+
+
+
+- Solve Velocity Logic
+
+  <img src="https://github.com/user-attachments/assets/63faca57-e767-46fa-a86f-afd148d81208">
+            <img src="https://github.com/user-attachments/assets/5b4bb245-4d90-4b8c-920a-43a8f6f15368">
+   
    
      
 ## 2주차 목표

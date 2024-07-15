@@ -188,8 +188,11 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - Rigid Body 전체 흐름
   <img src="https://github.com/user-attachments/assets/46e01623-a67f-4ae6-b474-94bcf4cbcfc0">
 
--  
-  
+-  Solve Collision Logic
+  <img src="https://github.com/user-attachments/assets/16758256-a37d-4371-a091-8defee3264e2">
+  <img src="https://github.com/user-attachments/assets/3d7afff4-da46-435a-85d8-bc5c0b02454e">
+  <img src="https://github.com/user-attachments/assets/5b396243-fa1f-4401-8431-e7502e0b5ddb">
+	  
    
      
 ## 2주차 목표

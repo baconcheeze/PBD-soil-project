@@ -182,6 +182,14 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
   - Iteration으로 Position만을 수정해나가는 Granular PBD , Timestep을 잘게 쪼개서 Position을 수정하고 velocity를 바로 이어서 수정해나가는 RigidBody XPBD를 융합하기 위해서
     Granular 파티클들의 업데이트 로직을 XPBD와 같게 만들 필요가 있지 않을까 생각, 바꿔보는중
+
+## 2024.07.15
+- 정지마찰이 제대로 적용되지 않는 문제가 있어 로직 수정
+- Rigid Body 전체 흐름
+  <img src="https://github.com/user-attachments/assets/46e01623-a67f-4ae6-b474-94bcf4cbcfc0">
+
+-  
+  
    
      
 ## 2주차 목표

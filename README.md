@@ -77,6 +77,9 @@
 
 ## 2024.07.10
 -모래 물성이 반영된 Granular PBD 로직 1차 완성
+  - 전체 흐름
+    <img src="https://github.com/user-attachments/assets/ee8faacb-152a-47e3-8779-3db92fc54b29">  
+
   - 가장 핵심인 입자간의 Contact Resolution 처리 :
   - <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/4cd9bc0c-dc01-48a5-961c-d2cefd6b1d0d"> 
     

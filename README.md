@@ -172,6 +172,8 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
 ## 2024.07.12
   - RigidBody XPBD에 Positional Constraint(Collision Constraint)을 반영한 Position Projection // Restitution, Friction 이 반영된 Velocity Projection 구현.
+
+
      <img src="https://github.com/user-attachments/assets/681a061a-9ed0-4c73-9b1e-e9d06539fd8c">
      <img src="https://github.com/user-attachments/assets/204d26e1-df56-47a6-a8a5-855d9611621d">
 

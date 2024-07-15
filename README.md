@@ -168,7 +168,16 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
 ## 2024.07.11
   - 위의 PBD로 RigidBody내 파티클들의 위치를 시뮬레이션 한 뒤 Shape Matching 및 Volume Preserving Constraint를 통해 RigidBody 형태를 유지시키는 방법이 성능적으로 한계가 있다고 생각해
-    Body에 통으로 XPBD를 적용시키기 위해 Detailed Rigid Body Simulation with Extended Position Based Dynamics 학습 및 구현중    
+    Body에 통으로 XPBD를 적용시키기 위해 Detailed Rigid Body Simulation with Extended Position Based Dynamics 학습 및 구현중
+
+## 2024.07.12
+  - RigidBody XPBD에 Positional Constraint(Collision Constraint)을 반영한 Position Projection // Restitution, Friction 이 반영된 Velocity Projection 구현.
+     <img src="https://github.com/user-attachments/assets/681a061a-9ed0-4c73-9b1e-e9d06539fd8c">
+     <img src="https://github.com/user-attachments/assets/204d26e1-df56-47a6-a8a5-855d9611621d">
+
+  - Iteration으로 Position만을 수정해나가는 Granular PBD , Timestep을 잘게 쪼개서 Position을 수정하고 velocity를 바로 이어서 수정해나가는 RigidBody XPBD를 융합하기 위해서
+    Granular 파티클들의 업데이트 로직을 XPBD와 같게 만들 필요가 있지 않을까 생각, 바꿔보는중
+   
      
 ## 2주차 목표
 - PBD GPU로 처리하게 이식

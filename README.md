@@ -56,6 +56,12 @@
 - PBD로직 Compute Shader로 옮기는 작업 진행중.
   <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/e1417e3c-8ddf-4d7f-995f-b000ac2274fa">
 
+## 2주차 목표
+- PBD GPU로 처리하게 이식
+- PBD Inner Particle Collision Detection (Continuous Collision Dectection, NeighborGrid Collision Detection)
+- PBD Particle <-> Rigid Body Interaction 구현
+- 흙 Particle이 떨어져서 풍차가 돌아가고, 쇠구슬이 떨어져서 쌓여있는 모래가 움푹 파이는 장면을 구현하는것이 목표.
+
 ## 2024.07.09
 - PBD로직 Compute Shader로 옮기는 작업 완료.
 
@@ -188,7 +194,20 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
     Granular 파티클들의 업데이트 로직을 XPBD와 같게 만들 필요가 있지 않을까 생각, 바꿔보는중
 
 ## 2024.07.15
-- 정지마찰이 제대로 적용되지 않는 문제가 있어 로직 수정
+- 정지마찰 로직 작성
+  
+- 정지마찰이 상시로 적용된 상태 (static friction coefficient := infinity)
+
+  <img src="https://github.com/user-attachments/assets/4032d331-be0e-43dc-b332-eaf471aae776">
+
+- 마찰 on 토크 10  
+
+ <img src="https://github.com/user-attachments/assets/2e4a806a-d6e4-4636-86b4-5d980fa8a0ab">
+
+- 마찰 off 토크 10
+
+ <img src="https://github.com/user-attachments/assets/dfc7d220-f7a7-4767-8199-1f58dbe9296a">
+
 - Rigid Body 전체 흐름
 
 
@@ -212,10 +231,6 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
    
    
      
-## 2주차 목표
-- PBD GPU로 처리하게 이식
-- PBD Inner Particle Collision Detection (Continuous Collision Dectection, NeighborGrid Collision Detection)
-- PBD Particle <-> Rigid Body Interaction 구현
-- 흙 Particle이 떨어져서 풍차가 돌아가고, 쇠구슬이 떨어져서 쌓여있는 모래가 움푹 파이는 장면을 구현하는것이 목표.
+
 
   

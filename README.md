@@ -254,7 +254,8 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 	
 
       
-   
+## 3주차 목표
+- XPBD RigidBody와 PBD Granular Particle의 Interaction 구현   
    
      
 

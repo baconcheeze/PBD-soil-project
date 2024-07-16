@@ -93,7 +93,9 @@
   - 가장 핵심인 입자간의 Contact Resolution 처리 :
   - <img src="https://github.com/baconcheeze/PBD-soil-project/assets/116047186/4cd9bc0c-dc01-48a5-961c-d2cefd6b1d0d"> 
     
-
+  - Deriving Coefficients :
+   https://github.com/user-attachments/assets/6b092687-b147-4217-a498-458aeabf35bb
+   https://github.com/user-attachments/assets/c9eea572-8244-48ee-9007-362e602add80
 
 
 ```

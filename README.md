@@ -246,7 +246,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
      - 마찰과 restitution이 stable하게 적용된듯한 지금 상황 가장 큰 문제점.
  
-	<img src="https://github.com/user-attachments/assets/4952e8aa-e234-418f-8973-584c2b03b65b">
+	 <img src="https://github.com/user-attachments/assets/bdb828e4-8fc4-465e-a3c2-a68088bfe683">
 
   	멈추지 않고 영원히 굴러가는 공
 	

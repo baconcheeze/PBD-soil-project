@@ -220,7 +220,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
 <img src="https://github.com/user-attachments/assets/16758256-a37d-4371-a091-8defee3264e2">
             <img src="https://github.com/user-attachments/assets/3d7afff4-da46-435a-85d8-bc5c0b02454e">
-            <img src="https://github.com/user-attachments/assets/5b396243-fa1f-4401-8431-e7502e0b5ddb">
+            <img src="https://github.com/user-attachments/assets/b7f52595-63cc-4359-898c-ae452f969651">
 
 
 

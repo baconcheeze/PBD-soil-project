@@ -228,6 +228,30 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
   <img src="https://github.com/user-attachments/assets/63faca57-e767-46fa-a86f-afd148d81208">
             <img src="https://github.com/user-attachments/assets/5b4bb245-4d90-4b8c-920a-43a8f6f15368">
+
+
+
+     - 정지마찰 positional impulse를 ∆_vt/|∆_vt | 로 줬을때의 문제점
+       
+       <img src="https://github.com/user-attachments/assets/a16d6131-4c9c-442c-a689-687532e36ea4">
+
+       -> normal 방향으로 물체를 끄집어 올린것도 이 impulse를 줄경우 그대로 돌려버리기 때문에 normal 방향 projection이 없던일이 되서 물체를 뚫고 들어감.
+
+     - 가장 단순한 방법으로 velocity solve 단계에서 tangent 방향 impulse를 -v_t 로 줬을때의 문제점
+ 
+       <img src="https://github.com/user-attachments/assets/bdb828e4-8fc4-465e-a3c2-a68088bfe683">
+
+       -> 가장 직관적인 방법인데 왜 이러는지 모르겠음, granular pbd에 friction을 줬을때와 같은 이유인가 싶어서 Stiffness Factor 1-(1-k)^1/n 를 걸어봐도 똑같이 문제 발생
+
+
+     - 마찰과 restitution이 stable하게 적용된듯한 지금 상황 가장 큰 문제점.
+       
+	<img src=" https://github.com/user-attachments/assets/4952e8aa-e234-418f-8973-584c2b03b65b">
+
+  	멈추지 않고 영원히 굴러가는 공
+	
+
+      
    
    
      

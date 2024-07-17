@@ -305,7 +305,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
   ## $\bigtriangleup p$ 가 $\nabla C(p)$ 와 나란하므로
 
-  ## $\nabla C(p)$ $\cdot$ $(r_1 \times \nabla_{p_1} C(p_1) , ... , r_1 \times \nabla_{p_n} C(p_n))$ = 0
+  ## $\nabla C(p)$ $\cdot$ $(r_1 x \nabla_{p_1} C(p_1) , ... , r_1 x \nabla_{p_n} C(p_n))$ = 0
 
   ## 따라서
 

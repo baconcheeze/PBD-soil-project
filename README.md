@@ -303,13 +303,15 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
   ## $C(r_1,...,r_n) = C(r_1+r_1 \times \bigtriangleup p_1 , ... , r_n+r_n \times \bigtriangleup p_n)$ 이 되어야 한다
 
-  ## $\bigtriangleup p$ 가 $\nabla C(p)$ 와 나란하므로
+  ## $\nabla C(p)$ $\cdot$ $(r_1 \times \bigtriangleup p_1 , ... , r_n \times \bigtriangleup p_n)$ = 0
 
-  ## $\nabla C(p)$ $\cdot$ $(r_1 \times \nabla_{p_1} C(p_1) , ... , r_1 \times \nabla_{p_n} C(p_n))$ = 0
+  ## $\Sigma_i \nabla_i C(p)$ $\cdot$ $(r_i \times \bigtriangleup p_i)$ = 0
 
-  ## 따라서
+   ## $\Sigma_i \bigtriangleup p_i$ $\cdot$ $(r_i \times \nabla_i C(p))$ = 0 holds for any  $\bigtriangleup p$
 
-   ## $\nabla C(p)$ 와 $(r_1 \times \bigtriangleup p_1 , ... , r_n \times \bigtriangleup p_n)$은 수직. C(p)와 Rotation이 독립이어야 한다는 조건도 만족된다$
+  ## 따라서 $\Sigma_i$ $\cdot$ $(r_i \times \nabla_i C(p))$ = 0
+
+   ## Angular Momentum conservation도 충족된다.
    
      
 

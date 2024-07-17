@@ -301,11 +301,11 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
   ## 마찬가지로 rotation에 대해서도
 
-  ## $C(r_1,...,r_n) = C(r_1+r_1x\bigtriangleup p_1 , ... , r_n+r_nx\bigtriangleup p_n)$ 이 되어야 한다
+  ## $C(r_1,...,r_n) = C(r_1+r_1 \times \bigtriangleup p_1 , ... , r_n+r_n \times \bigtriangleup p_n)$ 이 되어야 한다
 
   ## $\bigtriangleup p$ 가 $\nabla C(p)$ 와 나란하므로
 
-  ## $\nabla C(p)$ $\cdot$ $(r_1 x \nabla_{p_1} C(p_1) , ... , r_1 x \nabla_{p_n} C(p_n))$ = 0
+  ## $\nabla C(p)$ $\cdot$ $(r_1 \times \nabla_{p_1} C(p_1) , ... , r_1 \times \nabla_{p_n} C(p_n))$ = 0
 
   ## 따라서
 

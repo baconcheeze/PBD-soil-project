@@ -255,7 +255,34 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
       
 ## 3주차 목표
-- XPBD RigidBody와 PBD Granular Particle의 Interaction 구현   
+- XPBD RigidBody와 PBD Granular Particle의 Interaction 구현
+
+## 2024.07.16
+- ## Convergence rate of regularized newton rhapson method Iteration in PBD
+  
+  ## if C is L-smooth and $\parallel\nabla C(x_*)\parallel$ > 0 and C(x) = 0 has solution
+
+  ## By Definition of L-smoothness, 
+  
+  ## $C(x_{t+1}) <= C(x_t) + \nabla C(x_t) \cdot \bigtriangleup x_t + L/2 \parallel\bigtriangleup x_t\parallel^2$
+
+  ## Since $C(x_t) + \nabla C(x_t) \cdot \bigtriangleup x_t = 0$ it follows that
+
+  ## $C(x_{t+1}) <= L/2 \parallel\bigtriangleup x_t\parallel^2 = L/2 \frac{C(x_t)^2}{\||\nabla C(x_t)\||^2} = L/2 \frac{C(x_t)}{\||\nabla C(x_t)\||^2}* C(x_t)$
+
+  ## $\therefore \frac{C(x_{t+1})}{C(x_t)} <= L/2 * L/2 \frac{C(x_t)}{\||\nabla C(x_t)\||^2}$
+
+  ## By Initializing x_0 so that $C(x_0) < \delta_1 , ||\nabla C(x_t)||^2 > \delta_2 , \frac{\delta_1}{\delta_2} = \epsilon $
+
+  ## $C(x_t) -> C(x_*) int \epsilon^t$ speed , 지수함수로 빠르게 수렴하기에 iteration count 5~20이면 만족스러운 결과가 얻어진다.
+
+  ## if C is Linear function along $\nabla C(x)$ direction, L=0 therefore method converges to optimal point in just single iteration.
+
+  ## Constraint의 상당수를 차지하는 거리 함수는 위의 $\nabla C(x)$ 방향 선형성이 만족되므로 Iteration 한번만에 Solve되버린다. 하지만 어제 순간적으로 헷갈렸던 바대로 Constraint 여러개에 Gauss-Seider 방식으로 여러 Linearized된 제약조건들을 풀어나가기 때문에 Iteration이 필요하다.
+
+  ## 하나의 frame에 iteration만을 여러번 수행하는 PBD와 달리 XPBD는 하나의 frame을 여러 substep으로 나누고 delta time도 substep 수 만큼 나눠서 loop를 돌게 되는데 이 경우 delta time을 작아지게 해서 initial point x0를 optimal point로 덜 벗어나게 하기 때문에 $\epsilon$ 을
+
+  ## quadratic 하게 더 작아지게 할수 있고 더 효율적인 수렴속도가 보장된다. 저자가 기존 PBD의 방법에서 XPBD 넘어가며 Timestep 쪼개기를 적용한것이 이 때문으로 추측된다.
    
      
 

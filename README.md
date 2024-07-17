@@ -258,7 +258,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - XPBD RigidBody와 PBD Granular Particle의 Interaction 구현
 
 ## 2024.07.16
-  ## 당연하다고 생각하고 읽고 넘어갔던것들을 넘겨집는 시간을 가졌습니다.
+  ## 당연하다고 생각하고 읽고 넘어갔던것들을 넘겨짚는 시간을 가졌습니다.
 
 - ## Convergence rate of regularized newton rhapson method Iteration in PBD
 

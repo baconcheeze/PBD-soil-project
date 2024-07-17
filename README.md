@@ -259,22 +259,27 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
 ## 2024.07.16
 - ## Convergence rate of regularized newton rhapson method Iteration in PBD
-  
+
+  ## Definition of L-smoothness :
+
+  ## A function f is "L-smooth"if $f(w') <= f(w) + \nabla f(w) \dot (w' - w) + L/2 ||w-w'||^2$
+ 
   ## if C is L-smooth and $\parallel\nabla C(x_*)\parallel$ > 0 and C(x) = 0 has solution
 
   ## By Definition of L-smoothness, 
   
   ## $C(x_{t+1}) <= C(x_t) + \nabla C(x_t) \cdot \bigtriangleup x_t + L/2 \parallel\bigtriangleup x_t\parallel^2$
 
-  ## Since $C(x_t) + \nabla C(x_t) \cdot \bigtriangleup x_t = 0$ it follows that
+  ## Since $C(x_t) + \nabla C(x_t) \cdot \bigtriangleup x_t = 0$
+  it follows that
 
   ## $C(x_{t+1}) <= L/2 \parallel\bigtriangleup x_t\parallel^2 = L/2 \frac{C(x_t)^2}{\||\nabla C(x_t)\||^2} = L/2 \frac{C(x_t)}{\||\nabla C(x_t)\||^2}* C(x_t)$
 
-  ## $\therefore \frac{C(x_{t+1})}{C(x_t)} <= L/2 * L/2 \frac{C(x_t)}{\||\nabla C(x_t)\||^2}$
+  ## $\therefore \frac{C(x_{t+1})}{C(x_t)} <= L/2 \frac{C(x_t)}{\||\nabla C(x_t)\||^2}$
 
   ## By Initializing x_0 so that $C(x_0) < \delta_1 , ||\nabla C(x_t)||^2 > \delta_2 , \frac{\delta_1}{\delta_2} = \epsilon $
 
-  ## $C(x_t) -> C(x_*) int \epsilon^t$ speed , 지수함수로 빠르게 수렴하기에 iteration count 5~20이면 만족스러운 결과가 얻어진다.
+  ## $C(x_t) -> C(x_*)$ in   $\epsilon^t$ speed , 지수함수로 빠르게 수렴하기에 iteration count 5~20이면 만족스러운 결과가 얻어진다.
 
   ## if C is Linear function along $\nabla C(x)$ direction, L=0 therefore method converges to optimal point in just single iteration.
 
@@ -283,6 +288,28 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
   ## 하나의 frame에 iteration만을 여러번 수행하는 PBD와 달리 XPBD는 하나의 frame을 여러 substep으로 나누고 delta time도 substep 수 만큼 나눠서 loop를 돌게 되는데 이 경우 delta time을 작아지게 해서 initial point x0를 optimal point로 덜 벗어나게 하기 때문에 $\epsilon$ 을
 
   ## quadratic 하게 더 작아지게 할수 있고 더 효율적인 수렴속도가 보장된다. 저자가 기존 PBD의 방법에서 XPBD 넘어가며 Timestep 쪼개기를 적용한것이 이 때문으로 추측된다.
+
+  ## $\bigtriangleup x$ 를 $\nabla C(x)$ 와 나란하게 하는 또다른 이유 :
+
+  ## Translation T(x)에 대해 Constraint C는 영향 받지 않아야 한다. ex) 박스메쉬의 world position이 translated 되어도 버텍스간의 거리는 동일
+
+  ## C(x) = C(T(x) for any T
+
+  ## $\therefore$ $\nabla C(T(x))$ $\cdot$ $\frac{\partial T}{\partial x}$ = $\Sigma \nabla_{x_i} C(x_i) = 0$
+
+  ## 따라서 Linear Momentum conservation이 이루어진다.
+
+  ## 마찬가지로 rotation에 대해서도
+
+  ## $C(r_1,...,r_n) = C(r_1+r_1x\bigtriangleup p_1 , ... , r_n+r_nx\bigtriangleup p_n)$ 이 되어야 한다
+
+  ## $\bigtriangleup p$ 가 $\nabla C(p)$ 와 나란하므로
+
+  ## $\nabla C(p)$ $\cdot$ $(r_1 \times \nabla_{p_1} C(p_1) , ... , r_1 \times \nabla_{p_n} C(p_n))$ = 0
+
+  ## 따라서
+
+   ## $\nabla C(p)$ 와 $(r_1 \times \bigtriangleup p_1 , ... , r_n \times \bigtriangleup p_n)$은 수직. C(p)와 Rotation이 독립이어야 한다는 조건도 만족된다$
    
      
 

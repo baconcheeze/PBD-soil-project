@@ -289,7 +289,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
   ## 하나의 frame에 iteration만을 여러번 수행하는 PBD와 달리 XPBD는 하나의 frame을 여러 substep으로 나누고 delta time도 substep 수 만큼 나눠서 loop를 돌게 되는데 이 경우 delta time을 작아지게 해서 initial point x0를 optimal point로 덜 벗어나게 하기 때문에 $\epsilon$ 을
 
-  ## quadratic 하게 더 작아지게 할수 있고 더 효율적인 수렴속도가 보장된다. 저자가 기존 PBD의 방법에서 XPBD 넘어가며 Timestep 쪼개기를 적용한것이 이 때문으로 추측된다.
+  ## quadratic 하게 더 작아지게 할수 있고 더 효율적인 수렴속도가 보장된다. 저자가 기존 PBD의 방법과 달리 XPBD에선 Timestep 쪼개기를 적용한것이 이 때문으로 추측된다.
 
   ## $\bigtriangleup x$ 를 $\nabla C(x)$ 와 나란하게 하는 또다른 이유 :
 

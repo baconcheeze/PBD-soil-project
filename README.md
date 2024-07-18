@@ -315,7 +315,12 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 
    ## Angular Momentum conservation도 충족된다.
    
-     
+
+
+## 2024.07.17 
+- XPBD와 continuum mechanics를 활용한 PBI method (Position-Based Dynamics Handles Updated Lagrangian Inelasticity)
+- 그 밑바탕이 된 Drucker-Prager Elastoplasticity for Sand Animation의 MPM method
+- 이를 이해하기 위해 필요한 continuum mechanics 학습중
 
 
   

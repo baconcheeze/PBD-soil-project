@@ -322,5 +322,8 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - 그 밑바탕이 된 Drucker-Prager Elastoplasticity for Sand Animation의 MPM method
 - 이를 이해하기 위해 필요한 continuum mechanics 학습중
 
+## 2024.07.18
+- "Drucker-Prager Elastoplasticity for Sand Animation"를 보고 일단은 CPU로만 구동되는 MPM Method Sand Simulation Code 1차 작성 완료. Test는 아직 돌려보지 않았습니다. 
+
 
   

@@ -326,7 +326,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - "Drucker-Prager Elastoplasticity for Sand Animation"를 보고 일단은 CPU로만 구동되는 MPM Method Sand Simulation Code 1차 작성 완료. Test는 아직 돌려보지 않았습니다. 
 
 ## 2024.07.19
-- Article에 나와있는데로 3D 그리드로 구현해서는 CPU로는 리얼타임 테스트가 불가능해 2D로 변경, Rigid Body Signed Distance Field를 활용해 Collision 처리를 하기 위해 "Distance Fields for Rapid Collision Detection in Physically Based
+- Article에 나와있는데로 3D 그리드로 구현해서는 CPU로는 리얼타임 테스트가 불가능해 일단 2D로 변경, Rigid Body Signed Distance Field를 활용해 Collision 처리를 하기 위해 "Distance Fields for Rapid Collision Detection in Physically Based
 Modeling" 학습
 
   

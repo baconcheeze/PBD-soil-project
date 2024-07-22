@@ -387,4 +387,25 @@ static float getWip(const Vector2f& dist) // 2D weight
 
 
 ```
-  
+
+
+- 질량 전달
+- <img src="https://github.com/user-attachments/assets/0f679316-e3ce-4d9f-aea9-c9a317e9b6b3">
+
+```
+float inMi = Wip * particles[p].Mp;
+```
+
+
+- Velocity 전달
+- <img src="https://github.com/user-attachments/assets/d4487c52-b829-438d-bd3b-d7882fbe45ea">
+- <img src="https://github.com/user-attachments/assets/cc966b97-ddfc-4847-8f61-6306effe572f">
+
+```
+{
+
+					Vector2f inVi = Wip * particles[p].Mp *
+						(particles[p].Vp +
+							Dp_scal * H_INV * H_INV * particles[p].Bp * (-dist));
+}
+```

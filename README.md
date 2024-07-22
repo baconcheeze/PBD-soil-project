@@ -511,5 +511,26 @@ Vector2f center = Vector2f(150, 100);
 particles[p].Vp += Wip * nodes[node_id].Vi_fri;
 					particles[p].Bp += Wip * (nodes[node_id].Vi_fri.outer_product(-dist));
 ```
-     
+
+4. Update Particle
+   - Position 및 Velocity Gradient 업데이트 (둘다 Friction이 적용되기 전인 Vi_Col로 계산 (왜지???))
+   - <img src="https://github.com/user-attachments/assets/c93d0fbc-fe16-45e5-a43d-d0414a42ca6a">
+   - <img src="https://github.com/user-attachments/assets/1c54ea23-7f56-4c29-b5c2-9543e2b75112">
+
+```
+particles[p].Xp += Wip * (nodes[node_id].Xi + DeltaTime * nodes[node_id].Vi_col);
+T += nodes[node_id].Vi_col.outer_product(dWip);
+ ```
+
+5. Deformation Gradient에 Plasticity, Hardening 반영
+   - Deformation Gradient는 elastic 파트와 plastic 파트로 분해되어 관리됨
+   - Plastic 파트는 그대로 두고 elastic 파트만 다음과 같이 업데이트
+   <img src="https://github.com/user-attachments/assets/59866b6a-ec2c-4537-a4f0-0bdc5749d1e5">
+
+
+    ```
+FeTr = (Matrix2f(1, 0, 0, 1) + DeltaTime * T) * Fe;
+        FpTr = Fp;
+     ```
+   
      

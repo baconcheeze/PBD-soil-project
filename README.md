@@ -430,7 +430,7 @@ void DrySand::ConstitutiveModel() {
 }
 ```
 
-- 최종 전달
+- Particle To Grid 최종 전달 
   
 ```
 #pragma omp atomic
@@ -445,4 +445,60 @@ void DrySand::ConstitutiveModel() {
 					nodes[node_id].Fi[0] += inFi[0];
 #pragma omp atomic
 					nodes[node_id].Fi[1] += inFi[1];
+
+
+
+```
+
+2. Grid Update
+
+-  Velocity에 Mass 나눠주기 (== Kerner 적용 normalizing 작업)
+
+```
+nodes[i].Vi /= nodes[i].Mi;
+```
+
+- Force가 적용된 New Velocity 계산
+
+- <img src="https://github.com/user-attachments/assets/ff1a0036-6de3-4aa2-8f9b-d2bc5ed20b3e">
+```
+nodes[i].Fi = DeltaTime * (-nodes[i].Fi / nodes[i].Mi + G);
+				nodes[i].Vi += nodes[i].Fi;
+```
+
+- Signed Distance Field 를 통한 Collision과 Friction 처리 // 일단 SDF는 간단한 원과 선만
+- Force가 적용된 Vi, Collision까지 적용된 Vi_Col, Collision 이후 Friction 까지 적용된 Vi_Fri 까지 나누어서 저장하는것을 유의
+```
+Vector2f center = Vector2f(150, 100);
+		float radius = 50;
+
+		/* Current distance between node and boundary. */
+		float distance = (Xi - center).norm() - radius;
+		
+		if(distance<0)
+		{
+			Vector2f trial_position = Xi + DeltaTime * Vi_col;
+			float trial_distance = (trial_position - center).norm() - radius;
+			float dist_c = trial_distance - std::min(distance, 0.0f);
+
+			Vector2f normal = (trial_position - center) / ((trial_position - center).norm() + 0.0001);
+
+			/* Record collision and update node velocity. */
+			if (dist_c < 0) 
+			{
+				Vi_col -= dist_c * normal / DeltaTime;
+				
+
+				//Friction
+				/* Compute tangential velocity. */
+				Vector2f Vt = Vi_col - normal * (normal.dot(Vi_fri));
+				if (Vt.norm() > 1e-7) {
+					Vector2f t = Vt / Vt.norm();
+					/* Apply Coulomb's friction to tangential velocity. */
+					Vi_fri -= std::min(Vt.norm(), CFRI * (Vi_col - Vi).norm()) * t;
+				}
+			}
+
+			
+		}
 ```

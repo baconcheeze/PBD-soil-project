@@ -502,3 +502,14 @@ Vector2f center = Vector2f(150, 100);
 			
 		}
 ```
+
+3. Particle To Grid
+   - Velocity와 Affine Momentum Update (세 Vi중 최종 계산량인 Vi_fri으로 계산하는 것에 유의)
+     <img src="https://github.com/user-attachments/assets/e5879dd7-b7a8-4074-9317-558b3e5c593d">
+
+```
+particles[p].Vp += Wip * nodes[node_id].Vi_fri;
+					particles[p].Bp += Wip * (nodes[node_id].Vi_fri.outer_product(-dist));
+```
+     
+     

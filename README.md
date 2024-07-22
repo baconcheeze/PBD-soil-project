@@ -389,7 +389,7 @@ static float getWip(const Vector2f& dist) // 2D weight
 ```
 
 
-- 질량 전달
+- 질량 계산
 - <img src="https://github.com/user-attachments/assets/0f679316-e3ce-4d9f-aea9-c9a317e9b6b3">
 
 ```
@@ -397,15 +397,52 @@ float inMi = Wip * particles[p].Mp;
 ```
 
 
-- Velocity 전달
+- 그 파티클이 전해주는 Velocity 계산
 - <img src="https://github.com/user-attachments/assets/d4487c52-b829-438d-bd3b-d7882fbe45ea">
 - <img src="https://github.com/user-attachments/assets/cc966b97-ddfc-4847-8f61-6306effe572f">
 
 ```
 {
-
-					Vector2f inVi = Wip * particles[p].Mp *
-						(particles[p].Vp +
-							Dp_scal * H_INV * H_INV * particles[p].Bp * (-dist));
+Vector2f inVi = Wip * particles[p].Mp *	(particles[p].Vp + Dp_scal * H_INV * H_INV * particles[p].Bp * (-dist));
 }
+```
+
+- 파티클이 전해주는 힘 계산 
+- <img src="https://github.com/user-attachments/assets/89a43453-c035-402e-a4eb-0b8109019d04">
+- <img src="https://github.com/user-attachments/assets/eb357f15-130a-4d3e-a963-09559f95f0fc">
+- <img src="https://github.com/user-attachments/assets/63d0523f-e688-4284-ad8f-df7a906031eb">
+
+```
+void DrySand::ConstitutiveModel() {
+        Matrix2f U, V;
+        Vector2f Eps;
+        Fe.svd(&U, &Eps, &V); // SVD decomposition
+
+        Vector2f dFe = 2 * MU_dry_sand * Eps.inv() * Eps.log() +
+            LAMBDA_dry_sand * Eps.log().sum() * Eps.inv();
+
+        Ap = Vp0 * U.diag_product(dFe) * V.transpose() * Fe.transpose();
+    }
+
+{
+	particles[p].ConstitutiveModel();
+	Vector2f inFi = particles[p].Ap * dWip;
+}
+```
+
+- 최종 전달
+  
+```
+#pragma omp atomic
+					nodes[node_id].Mi += inMi;
+
+#pragma omp atomic
+					nodes[node_id].Vi[0] += inVi[0];
+#pragma omp atomic
+					nodes[node_id].Vi[1] += inVi[1];
+
+#pragma omp atomic
+					nodes[node_id].Fi[0] += inFi[0];
+#pragma omp atomic
+					nodes[node_id].Fi[1] += inFi[1];
 ```

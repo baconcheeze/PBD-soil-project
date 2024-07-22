@@ -329,4 +329,62 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - Article에 나와있는데로 3D 그리드로 구현해서는 CPU로는 리얼타임 테스트가 불가능해 일단 2D로 변경, Rigid Body Signed Distance Field를 활용해 Collision 처리를 하기 위해 "Distance Fields for Rapid Collision Detection in Physically Based
 Modeling" 학습
 
+1. Particle To Grid
+   - Kernel Weight 계산
+   -  <img src="https://github.com/user-attachments/assets/1e615b29-136b-4052-bdf2-b128a3e596a3">
+
+
+
+```
+static float Bspline(float x) // Cubic Bspline
+		{
+			float W;
+			x = fabs(x);
+
+			if (x < 1)
+				W = (x * x * x / 2.0f - x * x + 2 / 3.0f);
+
+			else if (x < 2)
+				W = (2 - x) * (2 - x) * (2 - x) / 6.0f;
+
+			else
+				W = 0;
+
+			return W;
+		}
+
+		static float dBspline(float x) // Cubic Bspline derivative
+		{
+			float dW;
+			float x_abs;
+			x_abs = fabs(x);
+
+			if (x_abs < 1)
+				dW = 1.5f * x * x_abs - 2.0f * x;
+
+			else if (x_abs < 2)
+				dW = -x * x_abs / 2.0f + 2 * x - 2 * x / x_abs;
+
+			else
+				dW = 0;
+
+			return dW;
+		}
+
+
+
+static float getWip(const Vector2f& dist) // 2D weight
+		{
+			return Bspline(dist[0]) * Bspline(dist[1]);
+		}
+
+		static Vector2f getdWip(const Vector2f& dist) // 2D weight gradient
+		{
+			return Vector2f(dBspline(dist[0]) * Bspline(dist[1]),
+				Bspline(dist[0]) * dBspline(dist[1]));
+		}
+
+
+
+```
   

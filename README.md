@@ -329,7 +329,7 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - Article에 나와있는데로 3D 그리드로 구현해서는 CPU로는 리얼타임 테스트가 불가능해 일단 2D로 변경, Rigid Body Signed Distance Field를 활용해 Collision 처리를 하기 위해 "Distance Fields for Rapid Collision Detection in Physically Based
 Modeling" 학습
 
-1. Particle To Grid
+## 1. Particle To Grid
    - Kernel Weight 계산
    -  <img src="https://github.com/user-attachments/assets/1e615b29-136b-4052-bdf2-b128a3e596a3">
 
@@ -450,7 +450,7 @@ void DrySand::ConstitutiveModel() {
 
 ```
 
-2. Grid Update
+## 2. Grid Update
 
 -  Velocity에 Mass 나눠주기 (== Kerner 적용 normalizing 작업)
 
@@ -503,7 +503,7 @@ Vector2f center = Vector2f(150, 100);
 		}
 ```
 
-3. Particle To Grid
+## 3. Particle To Grid
    - Velocity와 Affine Momentum Update (세 Vi중 최종 계산량인 Vi_fri으로 계산하는 것에 유의)
      <img src="https://github.com/user-attachments/assets/e5879dd7-b7a8-4074-9317-558b3e5c593d">
 
@@ -512,7 +512,7 @@ particles[p].Vp += Wip * nodes[node_id].Vi_fri;
 					particles[p].Bp += Wip * (nodes[node_id].Vi_fri.outer_product(-dist));
 ```
 
-4. Update Particle
+## 4. Update Particle
    - Position 및 Velocity Gradient 업데이트 (둘다 Friction이 적용되기 전인 Vi_Col로 계산 (왜지???))
    - <img src="https://github.com/user-attachments/assets/c93d0fbc-fe16-45e5-a43d-d0414a42ca6a">
    - <img src="https://github.com/user-attachments/assets/1c54ea23-7f56-4c29-b5c2-9543e2b75112">
@@ -522,7 +522,7 @@ particles[p].Xp += Wip * (nodes[node_id].Xi + DeltaTime * nodes[node_id].Vi_col)
 T += nodes[node_id].Vi_col.outer_product(dWip);
  ```
 
-5. Deformation Gradient에 Plasticity, Hardening 반영
+## 5. Deformation Gradient에 Plasticity, Hardening 반영
    - Deformation Gradient는 elastic 파트와 plastic 파트로 분해되어 관리됨
    - Plastic 파트는 그대로 두고 elastic 파트만 다음과 같이 업데이트
    - Projection 이후 elastic , plastic deformation gradient finalize

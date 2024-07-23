@@ -525,6 +525,7 @@ T += nodes[node_id].Vi_col.outer_product(dWip);
 5. Deformation Gradient에 Plasticity, Hardening 반영
    - Deformation Gradient는 elastic 파트와 plastic 파트로 분해되어 관리됨
    - Plastic 파트는 그대로 두고 elastic 파트만 다음과 같이 업데이트
+   - Projection 이후 elastic , plastic deformation gradient finalize
    <img src="https://github.com/user-attachments/assets/59866b6a-ec2c-4537-a4f0-0bdc5749d1e5">
 
    <img src="https://github.com/user-attachments/assets/4594b7cc-0d0d-43a6-bd40-1dc09584d8c8">
@@ -545,9 +546,41 @@ FeTr = (Matrix2f(1, 0, 0, 1) + DeltaTime * T) * Fe;
         Fp = V.diag_product_inv(T).diag_product(Eps) * V.transpose() * FpTr;
  
 ```
-    
 
-     -
+- Projection
+      <img src="https://github.com/user-attachments/assets/6cf254b5-cf64-4c01-b5e5-a4f4ec20bb19">
+
+```
+void DrySand::Projection(const Vector2f& Eps, Vector2f* T, float* dq) {
+        Vector2f e, e_c;
+
+        e = Eps.log();
+        e_c = e - e.sum() / 2.0f * Vector2f(1);
+
+        if (e_c.norm() < 1e-8 || e.sum() > 0) {
+            T->setOnes();
+            *dq = e.norm();
+            return; 
+        }
+
+        float dg = e_c.norm() +
+            (LAMBDA_dry_sand + MU_dry_sand) / MU_dry_sand * e.sum() * alpha;
+
+        if (dg <= 0) {
+            *T = Eps;
+            *dq = 0;
+            return; 
+        }
+
+        Vector2f Hm = e - dg * e_c / e_c.norm();
+
+        *T = Hm.exp();
+        *dq = dg;
+        return; 
+    }
+```
+
+- Hardening
    
 
      https://www.youtube.com/watch?v=QS7OU6l7vhI

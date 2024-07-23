@@ -527,11 +527,27 @@ T += nodes[node_id].Vi_col.outer_product(dWip);
    - Plastic 파트는 그대로 두고 elastic 파트만 다음과 같이 업데이트
    <img src="https://github.com/user-attachments/assets/59866b6a-ec2c-4537-a4f0-0bdc5749d1e5">
 
+   <img src="https://github.com/user-attachments/assets/4594b7cc-0d0d-43a6-bd40-1dc09584d8c8">
+   
 
     ```
 FeTr = (Matrix2f(1, 0, 0, 1) + DeltaTime * T) * Fe;
         FpTr = Fp;
+
+ 
      ```
+
+  ```
+ DrySand::Projection(Eps, &T, &dq);
+
+        // Elastic and plastic state
+        Fe = U.diag_product(T) * V.transpose();
+        Fp = V.diag_product_inv(T).diag_product(Eps) * V.transpose() * FpTr;
+ 
+     ```
+    
+
+     - 
    
 
      https://www.youtube.com/watch?v=QS7OU6l7vhI

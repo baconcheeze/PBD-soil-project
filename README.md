@@ -340,6 +340,8 @@ Modeling" 학습
 ## 1. Particle To Grid
    - Kernel Weight 계산
    -  <img src="https://github.com/user-attachments/assets/1e615b29-136b-4052-bdf2-b128a3e596a3">
+   -  <img src="https://github.com/user-attachments/assets/073bae0e-f7f0-4d2e-9e44-8d68bbc71c66">
+   
 
 ```
 static float Bspline(float x) // Cubic Bspline

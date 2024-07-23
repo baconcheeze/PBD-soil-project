@@ -329,11 +329,17 @@ float3 Constraint_SpringDamperFriction(inout float3 pos0, float3 pos1, float3 or
 - Article에 나와있는데로 3D 그리드로 구현해서는 CPU로는 리얼타임 테스트가 불가능해 일단 2D로 변경, Rigid Body Signed Distance Field를 활용해 Collision 처리를 하기 위해 "Distance Fields for Rapid Collision Detection in Physically Based
 Modeling" 학습
 
+## 2024.07.22 3주차 결산
+- PBD Particle -> XPBD의 인터렉션을 PBD Particle 하나 하나를 XPBD에서의 구형 Rigid Body와 똑같이 취급하는 방식으로 CPU에서 브루트 포스로 Collision Detection을 한 뒤에 XPBD Rigid 바디를 밀어 내게 하는 방식으로 구현
+- 결과는 예상한바대로 나왔으나 모래의 거동이 봐도 봐도 마음에 들지 않아 이것저것 영상자료를 보던 와중
+- https://www.youtube.com/watch?v=Bqme4WWuIVQ 영상을 보고 반해버려서 Material Point Method를 활용한 Sand 시뮬레이션 학습 및 구현
+
+## 0. Overview
+ <img src="https://github.com/user-attachments/assets/9b8175fc-e198-4599-a073-f73dbf4ec526">
+
 ## 1. Particle To Grid
    - Kernel Weight 계산
    -  <img src="https://github.com/user-attachments/assets/1e615b29-136b-4052-bdf2-b128a3e596a3">
-
-
 
 ```
 static float Bspline(float x) // Cubic Bspline
@@ -631,5 +637,8 @@ H2 0.2
 H3 10
 
 dt 0.0005 일때의 영상 :  https://www.youtube.com/watch?v=QS7OU6l7vhI
+
+## 4주차 과제
+
 
     

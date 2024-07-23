@@ -639,7 +639,7 @@ H1 9
 H2 0.2
 H3 10
 
-dt 0.0005 일때의 영상 :  https://www.youtube.com/watch?v=QS7OU6l7vhI
+GridSize 300x300 , Particle Count 500, dt 0.0005 일때의 영상 :  https://www.youtube.com/watch?v=QS7OU6l7vhI
 
 MPMSDFSimulate()의 1프레임 경과시간: 19ms 
 

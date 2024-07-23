@@ -641,7 +641,25 @@ H3 10
 
 dt 0.0005 일때의 영상 :  https://www.youtube.com/watch?v=QS7OU6l7vhI
 
+MPMSDFSimulate()의 1프레임 경과시간: 19ms 
+
 ## 4주차 과제
+1. Distance Fields for Rapid Collision Detection in Physically Based Modeling 를 학습해서 단순한 정육면체, 구 외에의 오브젝트에서도 Signed Distance Field를 구하고 모래와 충돌 시키기
+
+  <img src="https://github.com/user-attachments/assets/1b24cf7e-ec16-45ab-8b96-9473742ed0bb">
+  
+  <img src="https://github.com/user-attachments/assets/b6290ed2-a058-4d48-994f-4256957a8691">
+
+2. MPM Sand Particle <- Rigid Body의 인터렉션은 지금 MPM으로 구현되 있는 상황. Collision 이후 속도 처리를 움직이는 오브젝트에도 영향 받는 방식으로 변경 (ex. Vi_Col = V_RigidBodyObject + Something), Friction도 RigidBody의 각속도까지 고려한 상대속도를 반영하도록 변경
+- MPM Sand Particle -> Rigid Body의 인터렉션이 챌린징 한 부분.
+  1안: Particle 하나 하나를 모두 조그만 rigidbody 구 오브젝트로 취급하여 RigidBody와 Collision Detection을 하고 XPBD 적용.
+  2안: Grid 노드들에 있는 속도와 Mass 정보를 활용, 이를 rigidbody와 겹쳐서 rigidbody에 impulse 적용.
+
+3. 2의 결과까지 만족스럽다고 판단되면 모든 로직 GPU로 옮기고 3D로 구현, Particle 및 Grid 개수를 최대한 줄이고 DT값을 최대한 올려보기
+  
+  
+  
+
 
 
     

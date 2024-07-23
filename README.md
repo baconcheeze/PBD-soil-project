@@ -580,7 +580,56 @@ void DrySand::Projection(const Vector2f& Eps, Vector2f* T, float* dq) {
     }
 ```
 
-- Hardening
-   
 
-     https://www.youtube.com/watch?v=QS7OU6l7vhI
+
+- Hardening
+
+- Projection에서 dg를 구할때 쓰이는 alpha값 업데이트
+- <img src="https://github.com/user-attachments/assets/b709d0aa-267f-4ed9-9be3-58c2fb967736">
+```
+ // hardening
+        q += dq;
+        float phi = H0 + (H1 * q - H3) * exp(-H2 * q);
+        alpha = (float)(sqrt(2.0 / 3.0) * (2.0 * sin(phi)) / (3.0f - sin(phi)));
+```
+
+
+- Particle 및 Node 구성요소
+
+```
+/* Particle Info */
+        float Vp0; // Initial volume 
+        float Mp;  // Particle mass 
+        Vector2f Xp; // Particle position
+        Vector2f Vp; // Particle Velocity
+        Matrix2f Bp; // Affine Momentum
+	Matrix2f Fe, FeTr; // Elastic deformation 최종, 프로젝션 전
+	Matrix2f Fp, FpTr; // Plastic deformation 최종 , 프로젝션전
+	Matrix2f Ap; // 힘계산 중간과정에 사용되는 Matrix
+
+/* Node Info */
+		float Mi; // Node mass
+
+		Vector2f Xi;     // Node position (월드좌표)
+		Vector2f Vi;     // Node velocity, Force 적용
+		Vector2f Vi_col; // Node velocity, Force, Collision 적용
+		Vector2f Vi_fri; // Node velocity, Force, Collision, Friction 적용
+
+		Vector2f Fi; // Force applied to the node
+```
+  
+-   
+Friction Coefficient 0.3
+RHO_dry_sand  1600
+E_dry_sand  353700
+V_dry_sand  0.3
+LAMBDA_dry_sand = E_dry_sand * V_dry_sand / (1.0f + V_dry_sand) / (1.0f - 2.0f * V_dry_sand)
+MU_dry_sand = E_dry_sand / (1.0f + V_dry_sand) / 2.0
+H0 35
+H1 9
+H2 0.2
+H3 10
+
+dt 0.0005 일때의 영상 :  https://www.youtube.com/watch?v=QS7OU6l7vhI
+
+    

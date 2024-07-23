@@ -629,14 +629,23 @@ void DrySand::Projection(const Vector2f& Eps, Vector2f* T, float* dq) {
   
 -   
 Friction Coefficient 0.3
+
 RHO_dry_sand  1600
+
 E_dry_sand  353700
+
 V_dry_sand  0.3
+
 LAMBDA_dry_sand = E_dry_sand * V_dry_sand / (1.0f + V_dry_sand) / (1.0f - 2.0f * V_dry_sand)
+
 MU_dry_sand = E_dry_sand / (1.0f + V_dry_sand) / 2.0
+
 H0 35
+
 H1 9
+
 H2 0.2
+
 H3 10
 
 GridSize 300x300 , Particle Count 500, dt 0.0005 일때의 영상 :  https://www.youtube.com/watch?v=QS7OU6l7vhI

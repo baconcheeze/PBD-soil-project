@@ -419,6 +419,7 @@ Vector2f inVi = Wip * particles[p].Mp *	(particles[p].Vp + Dp_scal * H_INV * H_I
 - <img src="https://github.com/user-attachments/assets/89a43453-c035-402e-a4eb-0b8109019d04">
 - <img src="https://github.com/user-attachments/assets/eb357f15-130a-4d3e-a963-09559f95f0fc">
 - <img src="https://github.com/user-attachments/assets/63d0523f-e688-4284-ad8f-df7a906031eb">
+- <img src="https://github.com/user-attachments/assets/64a6209a-9e7a-4cc9-a60e-fc3506731004">
 
 ```
 void DrySand::ConstitutiveModel() {

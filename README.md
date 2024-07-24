@@ -666,7 +666,7 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
 3. 2의 결과까지 만족스럽다고 판단되면 모든 로직 GPU로 옮기고 3D로 구현, Particle 및 Grid 개수를 최대한 줄이고 DT값을 최대한 올려보기
   
 ## 07.23  
-- ConstituveModel 이리저리 가지고 놀다가 particle들의 constituveModel을 바꿔주면 Particle과 Rigid 바디의 Constituve Model을 다르게 해주기만 하면 Rigid바디 <-> Particle을 얻을수 있을것 같음을 확인
+- ConstituveModel 이리저리 가지고 놀다가 particle들의 Particle과 Rigid 바디의 Constituve Model을 다르게 해주기만 하면 Rigid바디 <-> Particle Interaction을 얻을수 있을것 같음을 확인. 
 
 - <img src="https://github.com/user-attachments/assets/24898737-0d28-43c0-9eaf-41013950db6d">
 

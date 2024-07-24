@@ -658,7 +658,6 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
   <img src="https://github.com/user-attachments/assets/1b24cf7e-ec16-45ab-8b96-9473742ed0bb">
   
   <img src="https://github.com/user-attachments/assets/b6290ed2-a058-4d48-994f-4256957a8691">
-
 2. MPM Sand Particle <- Rigid Body의 인터렉션은 지금 MPM으로 구현되 있는 상황. Collision 이후 속도 처리를 움직이는 오브젝트에도 영향 받는 방식으로 변경 (ex. Vi_Col = V_RigidBodyObject + Something), Friction도 RigidBody의 각속도까지 고려한 상대속도를 반영하도록 변경
 - MPM Sand Particle -> Rigid Body의 인터렉션이 챌린징 한 부분.
   1안: Particle 하나 하나를 모두 조그만 rigidbody 구 오브젝트로 취급하여 RigidBody와 Collision Detection을 하고 XPBD 적용.
@@ -669,7 +668,7 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
 ## 07.23  
 - ConstituveModel 이리저리 가지고 놀다가 particle들의 constituveModel을 바꿔주면 Particle과 Rigid 바디의 Constituve Model을 다르게 해주기만 하면 Rigid바디 <-> Particle을 얻을수 있을것 같음을 확인
 
- 	<img src="https://github.com/user-attachments/assets/2ce8066e-2a78-406a-8a35-d1613c89228d">
+  <img src="https://github.com/user-attachments/assets/2ce8066e-2a78-406a-8a35-d1613c89228d">
 
 
 - "A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling" 학습중

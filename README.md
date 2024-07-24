@@ -669,9 +669,10 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
 ## 07.23  
 - ConstituveModel 이리저리 가지고 놀다가 particle들의 constituveModel을 바꿔주면 Particle과 Rigid 바디의 Constituve Model을 다르게 해주기만 하면 Rigid바디 <-> Particle을 얻을수 있을것 같음을 확인
 
-  <img src="https://github.com/user-attachments/assets/7f45718e-4aa7-43a2-9c8a-fe874620bc54">
+ 	<img src="https://github.com/user-attachments/assets/2ce8066e-2a78-406a-8a35-d1613c89228d">
 
- - "A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling" 학습중
+
+- "A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling" 학습중
 
   
 

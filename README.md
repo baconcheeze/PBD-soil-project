@@ -676,7 +676,7 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
   
 
 ## 07.24  
-- CPU 병렬화를 하고 DT를 최대한 끌어올려서 real time 환경에서의 거동 테스트
+- CPU 병렬화를 하고 DT를 최대한 끌어올려서 real time 환경에서의 거동 테스트, Particle count 500, Grid Size 300x300, dt 0.005, 1 frame 경과시간 1ms 미만
 - <img src="https://github.com/user-attachments/assets/40f7cf67-c55b-4437-bf8d-e2bc2468415b"> 
 
 - Hyper elastic body의 constituve model을 적용해서 테스트 해봤으나 물체의 형태가 유지되지 않는 문제 발생.

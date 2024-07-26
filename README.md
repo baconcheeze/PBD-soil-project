@@ -680,7 +680,17 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
 - <img src="https://github.com/user-attachments/assets/40f7cf67-c55b-4437-bf8d-e2bc2468415b"> 
 
 - Hyper elastic body의 constituve model을 적용해서 테스트 해봤으나 물체의 형태가 유지되지 않는 문제 발생.
--<img src="https://github.com/user-attachments/assets/37c28f29-2cb3-49da-9c40-fe30a45c7549"> 
+-<img src="https://github.com/user-attachments/assets/37c28f29-2cb3-49da-9c40-fe30a45c7549">
+
+## 07.25 
+- Moving Least Square 근사를 활용해 MPM을 최적화하는 기법 적용
+- 중요변경 1.
+  <img src="https://github.com/user-attachments/assets/52650957-acfb-412a-8f54-31bed3e2e8d2">
+  변경전
+  <img src="https://github.com/user-attachments/assets/d4f52710-252d-4029-b754-1fccfbccae58">
+  변경후
+
+  -
 
 
 

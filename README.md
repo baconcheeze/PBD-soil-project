@@ -685,8 +685,10 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
 ## 07.25 
 - Moving Least Square 근사를 활용해 MPM을 최적화하는 기법 적용
 - 중요변경 1.
+
   <img src="https://github.com/user-attachments/assets/52650957-acfb-412a-8f54-31bed3e2e8d2">
   변경전
+  
   <img src="https://github.com/user-attachments/assets/d4f52710-252d-4029-b754-1fccfbccae58">
   변경후
 

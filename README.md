@@ -686,14 +686,17 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
 - Moving Least Square 근사를 활용해 MPM을 최적화하는 기법 적용
 - 중요변경 1.
 
+변경전
+
   <img src="https://github.com/user-attachments/assets/52650957-acfb-412a-8f54-31bed3e2e8d2">
-  변경전
   
+변경후
+   
   <img src="https://github.com/user-attachments/assets/d4f52710-252d-4029-b754-1fccfbccae58">
-  변경후
+
 
   - 이로 인해
-    ```
+```
 Vector2f inFi = particles[p].Ap * dWip;
 
 #pragma omp atomic
@@ -701,17 +704,16 @@ Vector2f inFi = particles[p].Ap * dWip;
 #pragma omp atomic
 					nodes[node_id].Fi[1] += inFi[1];
 
-     
-    ```
+```
 
     위 처럼 Particle To Grid 단계에서 Fi 역시 전달해주고 Grid에서 이를 Velocity에 다시 적용시켜줘야 됐던 부분이
 
-     ```
+```
 double Dinv = Dp_scal * H_INV * H_INV;
 Matrix2f stress = -DeltaTime * (Dinv * particles[p].Ap)/ particles[p].Mp;
 Matrix2f affine = stress + particles[p].Cp;
 Vector2f NewVal = Wip * particles[p].Mp * (particles[p].Vp + affine * (-dist));
-      ```
+```
 
       위 처럼 P2G 단계에서부터 Force를 New Velocity에 적용할수 있게 되어 atomic operation인 P2G 단계에서의 Force 전달을 생략할수 있게 되었다.
 
@@ -721,10 +723,10 @@ Vector2f NewVal = Wip * particles[p].Mp * (particles[p].Vp + affine * (-dist));
 
      Velocity Gradient Field를 전단계에 이미 구해놓은 Cp로 근사한다. (Cp는 Bp를 통해 간단히 계산가능)
 
-     ```
+```
 particles[p].Xp += Wip * (nodes[node_id].Xi + DeltaTime * nodes[node_id].Vi_col);
 T += nodes[node_id].Vi_col.outer_product(dWip);
-     ```
+```
 
      모든 파티클들이 인접노드들을 순회하며 행했던 Velocity Gradient와 Position Update가 생략되고 
      Particle Position Update는 
@@ -736,9 +738,17 @@ T += nodes[node_id].Vi_col.outer_product(dWip);
 루프문을 돌 필요없이 이 와 같이 가장 간단한 형태로 축약된다.
 
 
+Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4ms 미만
+
+
+ <img src="https://github.com/user-attachments/assets/f9bb170e-e687-4915-b806-6383d2e8d795">
+
+ <img src="https://github.com/user-attachments/assets/9523adce-4d32-4760-a416-efe7ceb317aa">
+
+
 
 - CPIC을 통해 Rigid Body <-> Particle 인터렉션을 하는 Pseodo Code 작성
-  ```
+```
 // CDF
 
 // Grid Node에 저장할것
@@ -850,7 +860,7 @@ T += nodes[node_id].Vi_col.outer_product(dWip);
 //		
 
 
-  ```
+```
 
     
 

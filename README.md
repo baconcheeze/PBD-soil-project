@@ -692,7 +692,167 @@ MPMSDFSimulate()의 1프레임 경과시간: 19ms
   <img src="https://github.com/user-attachments/assets/d4f52710-252d-4029-b754-1fccfbccae58">
   변경후
 
-  -
+  - 이로 인해
+    ```
+Vector2f inFi = particles[p].Ap * dWip;
+
+#pragma omp atomic
+					nodes[node_id].Fi[0] += inFi[0];
+#pragma omp atomic
+					nodes[node_id].Fi[1] += inFi[1];
+
+     
+    ```
+
+    위 처럼 Particle To Grid 단계에서 Fi 역시 전달해주고 Grid에서 이를 Velocity에 다시 적용시켜줘야 됐던 부분이
+
+     ```
+double Dinv = Dp_scal * H_INV * H_INV;
+Matrix2f stress = -DeltaTime * (Dinv * particles[p].Ap)/ particles[p].Mp;
+Matrix2f affine = stress + particles[p].Cp;
+Vector2f NewVal = Wip * particles[p].Mp * (particles[p].Vp + affine * (-dist));
+      ```
+
+      위 처럼 P2G 단계에서부터 Force를 New Velocity에 적용할수 있게 되어 atomic operation인 P2G 단계에서의 Force 전달을 생략할수 있게 되었다.
+
+     - 중요변경 2. 
+     
+     <img src="https://github.com/user-attachments/assets/824b0e6d-387c-4b3b-a245-1b2b53f34c23">
+
+     Velocity Gradient Field를 전단계에 이미 구해놓은 Cp로 근사한다. (Cp는 Bp를 통해 간단히 계산가능)
+
+     ```
+particles[p].Xp += Wip * (nodes[node_id].Xi + DeltaTime * nodes[node_id].Vi_col);
+T += nodes[node_id].Vi_col.outer_product(dWip);
+     ```
+
+     모든 파티클들이 인접노드들을 순회하며 행했던 Velocity Gradient와 Position Update가 생략되고 
+     Particle Position Update는 
+
+```
+     particles[p].Xp += DeltaTime * particles[p].Vp;
+```
+
+루프문을 돌 필요없이 이 와 같이 가장 간단한 형태로 축약된다.
+
+
+
+- CPIC을 통해 Rigid Body <-> Particle 인터렉션을 하는 Pseodo Code 작성
+  ```
+// CDF
+
+// Grid Node에 저장할것
+// d, A, T , rigidbody particle closest to node (body마다) := rpcb
+// rigidbody closest to node := rc
+
+// Particle 단위로 저장할것
+// d, A, T , normal (body 마다)
+
+//======================================  1. Grid CDF
+
+// 1. Grid Node 마다 d,A,T,rpcb, rc 초기화
+
+// 2. 모든 rigid body의 모든 rigid particle을 돌며
+// d,A,rpcb,T 계산
+
+// 3. 모든 grid node를 돌며 rc 계산
+
+
+//====================================== 2. Particle CDF
+
+// 1. 인접 커널 Node들을 돌며 하나라도 A == 1이라면 particle의 A = 1로 세팅 (Easy~)
+
+// 2. Tpr 계산  ( https://yuanming.taichi.graphics/publication/2018-mlsmpm/mls-mpm-cpic.pdf   eq. 21)
+
+// 3. A == 1 이고 Tpr > 0 이면 T = 1, A==1이고 Tpr < 0 이면 T = -1, A==0이면 T=0
+
+// 4. A == 1이라면 d와 normal 역시 계산
+
+//====================================== 3. P2G
+
+// 1. MPM P2G As Usual
+
+// 2. 인접노드들을 돌며 particle과의 comptatiblity 확인 
+//  How? => 모든 body k에 대해서 node_T[k] == particle_T[k] == 1 or node_T[k] == particle_T[k] == -1 or node_T[k] == 0 or particle_T[k] == 0 을 만족하는지 확인
+// 하나의 body와 라도 만족 안하면 incompatible!
+
+// Compatible 한 경우에만 v, m Transfer (https://yuanming.taichi.graphics/publication/2018-mlsmpm/mls-mpm-cpic.pdf  eq.23 , eq.24)
+
+// ===================================== 4. Grid MPM Update as usual
+
+// ===================================== 5. G2P
+
+// 1. 모든 파티클에 대해 모든 인접노들을 돌며 P2G때와 마찬가지 방법으로 Compatiblity Check!
+
+// 2. incompatible 한 경우와 Compatible 한 경우 구분해서 g_v 계산
+
+// 3. new_v += weight * g_v  , new_C update as usual
+
+// 4. Penalty Force f_penalty 계산 후 new_v += dt * f_penalty / p_mass; (https://yuanming.taichi.graphics/publication/2018-mlsmpm/mls-mpm-cpic.pdf eq.22)
+
+// 5. ** Particle Advection
+
+// 6. ** Rigidbody Advection
+
+
+// 부록 1. g_v 구하기
+
+//r_body = grid_r[base + offset]                                      // Node에서 가장 가까운 body
+//temp = base + offset                                                // 노드 인덱스
+//r_id = grid_rp[temp[0], temp[1], r_body]                            // 그 body의 rigid particle중 Node와 가장 가까운것
+
+//line = (x_r[r_id + 1, r_body] - x_r[r_id, r_body]).normalized()     // rigid body 파티클이 속해있는 라인 (3차원이었으면 triangle이었겠으나 2차원이므로 line)
+//pa = x[p] - x_r[r_id, r_body]
+//np = (pa - pa.dot(line) * line).normalized()                        // particle -> line으로 내린 수선 := np
+//sg = (v[p] - v_rp[r_id, r_body]).dot(np)                            // particle과 rigidbody 파티클의 np 방향 상대속도 := sg
+//if sg > 0:													      // sg > 0 이면 벗어나고 있다는 뜻이므로 g_v = v[p] 그대로
+//g_v = v[p]
+//else:
+//vt = (v[p] - v_rp[r_id, r_body]) - sg * np                          // 탄젠트 방향 상대속도
+//xi = max(0, vt.norm() + dy * sg)                                    // Projection
+//g_v = vt.normalized() * xi + v_rp[r_id, r_body]
+
+//# accumulate angular momentum
+//rp = x_rp[r_id, r_body] - x_r[n_rseg, r_body]                       // rigid particle의 center of mass 기준 상대 좌표
+//weight = w[i][0] * w[j][1]										  
+//mvp = p_mass  * (v[p] - g_v)										  // 모멘텀
+//Mt += weight * rp[0] * mvp[1] - rp[1] * mvp[0] # cross product for 2D   // Angular 모멘텀 
+
+
+// 부록 2. Rigid Body Advection
+
+
+ 
+
+//# rigid body advection
+// 
+// 1. 관성 모멘텀 J_line과 모멘텀 변화 Mt로 각속도 omega를 업데이트
+//dw = Mt / J_line
+//omega[None] += dw
+
+// 2. 모든 rigid바디 파티클마다 속도 계산
+//og_Vec = ti.Vector([0.0, 0.0, omega])
+//for p, body in x_rp :
+//rp = x_rp[p, body] - x_r[n_rseg, body]
+//rp_Vec = ti.Vector([rp[0], rp[1], 0.0])
+//vrp = og_Vec.cross(rp_Vec)
+//#print(vrp)
+//v_rp[p, body] = ti.Vector([vrp[0], vrp[1]])
+
+// v_rp를 이용해서 x_rp, x_r 업데이트
+//for p, body in x_rp :
+//x_rp[p, body] = x_rp[p, body] + dt * v_rp[p, body]
+//for j in ti.static(range(n_bodies)) :
+//	for i in range(n_rseg - 1) :
+//		x_r[i + 1, j] = (x_rp[i, j] + x_rp[i + 1, j]) / 2.0
+//		x_r[0, j] = 2 * x_rp[0, j] - x_r[1, j]
+//		x_r[n_rseg, j] = 2 * x_rp[n_rseg - 1, j] - x_r[n_rseg - 1, j]
+//		
+
+
+  ```
+
+    
 
 
 

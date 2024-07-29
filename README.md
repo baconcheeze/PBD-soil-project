@@ -862,6 +862,12 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 
 ```
 
+## 07.26
+
+- Colored Distance Field와 Moving Least Square를 활용한 RigidBody <-> MPM particle 커플링 코드 작성시작
+- Colored Distance Field를 매프레임 기록하고 Moving Least Square을 통해 RigidBody까지의 Distance, Normal을 근사하는 작업까지 테스트
+- <img src="https://github.com/user-attachments/assets/ad5482de-78bd-4774-a711-53d6f417736c">
+  
     
 
 

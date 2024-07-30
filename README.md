@@ -1101,6 +1101,27 @@ int asdf = 0;
 ```
 
 
+## MPMParticle -> Grid (Compatiblity Check)
+- Particle과 Grid 모두 물체들 밖에 있거나 Particle과 Grid 둘중 하나라도 invalid 하다면 Compatible (충돌처리 x)  아니라면 incompatible(충돌처리 o)
+- Compatible한 Grid Node 에만 MPMParticle 정보를 전달해준다.
+
+```
+// Check Compatibility
+int flag = 1;
+// For All Bodies
+for (int k = 0; k < RigidBodies.size(); ++k)
+{
+if ((particles[p].T_pb[k]>0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k]>0)
+	|| particles[p].T_pb[k] * mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] == 0)
+	continue;
+
+else
+	flag = 0;
+
+}
+```  
+
+
  
 	
    

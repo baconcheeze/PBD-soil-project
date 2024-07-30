@@ -1125,7 +1125,8 @@ else
 - 위와 마찬가지로 Compatibility Check!
 
 - 이번엔 incompatible한 경우 (충돌 처리, velocity 재조정 작업 진행)
-	1. 노멀 방향 상대속도를 구해서 0보다 크다면 벗어나고 있다는 뜻이므로 Original Velocity 그대로 둔다
+1. 노멀 방향 상대속도를 구해서 0보다 크다면 벗어나고 있다는 뜻이므로 Original Velocity 그대로 둔다
+
 
 ```
 float sg =  (originalvel - body->vec_RigidParticleVelocity[p]).dot(np); // 노멀 방향 상대속도				
@@ -1134,7 +1135,9 @@ if (sg > 0) // 벗어나는중
 	Velocity = originalvel;
 ```
 
-	2. 아니라면 노멀 방향 상대 속도를 0으로 만들어 버리고 탄젠트 방향 상대 속도에 friction을 적용 (현재는 가장 간단하게 그냥 tangent 방향 속도도 없애버리는중 (Sticky Collision))
+
+2. 아니라면 노멀 방향 상대 속도를 0으로 만들어 버리고 탄젠트 방향 상대 속도에 friction을 적용 (현재는 가장 간단하게 그냥 tangent 방향 속도도 없애버리는중 (Sticky Collision))
+
 
 ```
 else // Approaching
@@ -1151,7 +1154,8 @@ else // Approaching
 	}
 ```
 
-	3. Rigid Body Advection에도 필요한 Momentum 합산
+
+3. Rigid Body Advection에도 필요한 Momentum 합산
  
 ```
 Vector2f rp = body->vec_RigidParticle_World[p] - body->Translation;

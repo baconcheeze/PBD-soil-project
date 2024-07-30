@@ -1053,6 +1053,16 @@ if (particles[p].A_pb[k] == 1)
 					}	
 ```  
 
+
+
+- Particle의 T값을 시각화: 빨간색은 T == 1 , 파란색은 T == -1 , 검은색은 T == 0
+
+  <img src="https://github.com/user-attachments/assets/ad5482de-78bd-4774-a711-53d6f417736c">
+
+
+
+
+
 - Distance와 Normal을 MLS를 통해 근사
 
 - MLS란

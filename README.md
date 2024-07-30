@@ -1026,6 +1026,32 @@ void MPMCdf::UpdateCdf(const std::vector<MPMRigidBody*>& inRigidBody)
 }
 ```
 
+## 2. Grid Particle -> MPM Particle 정보 전달
+- A: MPM Particle 주변 Grid [-1,2] x [-1,2] 하나라도 A값이 Valid이면 MPM Particle의 A값도 Valid
+
+```
+if(mCdf->CDFGrid[i + x][j + y].A_ib[k] == 1)
+	particles[p].A_pb[k] = 1;
+```
+
+- T: Grid Distance * Grid T * Kernel Weight를 합산 하여 양수이면 1, 아니면 -1 , A가 invalid일경우 T는 0
+
+  <img src="https://github.com/user-attachments/assets/f09ca509-0eaf-478f-a5be-029c7972088e">
+
+```
+Tpr += Wip * mCdf->CDFGrid[i + x][j + y].D_ib[k] * mCdf->CDFGrid[i + x][j + y].T_ib[k];
+
+if (particles[p].A_pb[k] == 1)
+				{
+					if (particles[p].T_pb[k] == 0)
+					{
+						if (Tpr > 0)
+							particles[p].T_pb[k] = 1;
+
+						else
+							particles[p].T_pb[k] = -1;
+					}	
+```  
   
     
 

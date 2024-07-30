@@ -1257,11 +1257,13 @@ Vector2f NewVal = Wip * particles[p].Mp * (particles[p].Vp + affine * (-dist));
 위 처럼 P2G 단계에서부터 Force를 New Velocity에 적용할수 있게 되어 atomic operation인 P2G 단계에서의 Force 전달을 생략할수 있게 되었다.
 
      
-     - 중요변경 2. 
+ - 중요변경 2. 
      
-     <img src="https://github.com/user-attachments/assets/824b0e6d-387c-4b3b-a245-1b2b53f34c23">
 
-     Velocity Gradient Field를 전단계에 이미 구해놓은 Cp로 근사한다. (Cp는 Bp를 통해 간단히 계산가능)
+<img src="https://github.com/user-attachments/assets/824b0e6d-387c-4b3b-a245-1b2b53f34c23">
+
+Velocity Gradient Field를 전단계에 이미 구해놓은 Cp로 근사한다. (Cp는 Bp를 통해 간단히 계산가능)
+
 
 
 ```

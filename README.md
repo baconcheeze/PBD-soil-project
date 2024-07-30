@@ -886,6 +886,10 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 6. Rigid Body Advection, MPM Particle Advection 수행
 
 ## 1. Rigid Particle -> Grid 정보 전달
+
+<img src="https://github.com/user-attachments/assets/ca5bd91b-0dbf-482a-9b65-ba81d8529318">
+
+
 - A : 그리드 점 에서 해당 Rigid Particle이 속해있는 triangle(2차원의 경우 line) 까지 Distance가 Valid한지 여부 (해당 line으로의 Projection이 그 line 위에 존재 하는지 여부)
 - T : A가 invalid이면 0, line(triangle)의 바깥쪽이면 1, line(triangle)의 안쪽이면 -1
 - D : Distance (절대값)

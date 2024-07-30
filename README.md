@@ -1172,6 +1172,34 @@ Vector2f rp = body->vec_RigidParticle_World[p] - body->Translation;
 Vector2f mvp = Wip * particles[p].Mp * (particles[p].Vp - Velocity);
 AngularMomentum += rp[0] * mvp[1] - rp[1] * mvp[0];
 ```
+
+
+
+## Penalty Force 적용
+- 정확히 뭔지는 모르겠음. 물체 바깥으로 힘을 작용시켜준다.
+ <img src="https://github.com/user-attachments/assets/e19ff984-394b-4a33-ae32-2a8d57b33622">
+
+```
+//Penalty Force
+				
+for (int k = 0; k < RigidBodies.size(); ++k)
+{
+	if (particles[p].T_pb[k] * particles[p].D_pb[k] < 0)
+	{
+		auto penalty = particles[p].D_pb[k] * particles[p].N_pb[k] * 5;
+		particles[p].Vp += penalty * DeltaTime;
+
+	}
+}
+```
+
+## RigidBody Advection 적용
+
+- 현재는 각운동만 적용시키고 있다.
+
+```
+RigidBodies[0]->Angular_Velocity += AngularMomentum / (RigidBodies[0]->Inertia);
+```
   
 
  

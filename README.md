@@ -1052,6 +1052,22 @@ if (particles[p].A_pb[k] == 1)
 							particles[p].T_pb[k] = -1;
 					}	
 ```  
+
+- Distance와 Normal을 MLS를 통해 근사
+
+- MLS란
+임의의 일변수/다변수 연속함수가 주어졌을때
+  <img src="https://github.com/user-attachments/assets/4821eead-553e-4f6e-a290-baceb2cf4f19">
+
+다음과 같은 형태의 다항함수로 근사하는 기법
+  <img src="https://github.com/user-attachments/assets/11c7149b-4ad9-4992-8da0-602006879468">
+
+공식
+ <img src="https://github.com/user-attachments/assets/c065689d-013e-4949-8099-637cddb002f1">
+  
+
+	
+   
   
     
 

@@ -1068,7 +1068,10 @@ if (particles[p].A_pb[k] == 1)
  
  <img src="https://github.com/user-attachments/assets/c065689d-013e-4949-8099-637cddb002f1">
   
+- MLS를 활용해 MPM Particle 점 주변 Grid에서의 정보들을 활용해 해당 MPM Particle에서의 Function Value (== Distance) 와 Gradient(== Normal) 을 Reconstruct
 
+  <img src="https://github.com/user-attachments/assets/1184d444-8c70-461a-ab19-012652386603">
+ 
 	
    
   

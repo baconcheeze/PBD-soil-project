@@ -871,6 +871,16 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 - Particle To Grid 단계에서 Colored Distance Field로 Compatibility를 체크하고 컴패터블한 Grid에만 Information을 전달해줬을 경우 테스트
 - <img src="https://github.com/user-attachments/assets/403af10c-bba8-43d3-a88c-fdd62e88f9da">
 
+
+## CDF-MLS-RIGID BODY COUPLING OVERVIEW
+0. Initialize 단계
+   - RigidBody의 바운더리를 따라서 RigidParticle 생성
+1. Rigid Particle -> Grid 정보 전달 (A,T,D)
+2. Grid Particle -> MPM Particle 정보 전달
+3. MPM Particle -> Grid 정보 전달 (Compatibility 연산 후 수행 Compatibility는 충돌 여부와 연관 o)
+4. 일반적인 MPM Grid Update 진행
+5. Grid -> MPM Particle 정보 전달 (마찬가지로 Compatibility 연산 후 수행)
+6. Rigid Body Advection, MPM Particle Advection 수행 
   
     
 

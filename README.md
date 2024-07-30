@@ -1071,6 +1071,36 @@ if (particles[p].A_pb[k] == 1)
 - MLS를 활용해 MPM Particle 점 주변 Grid에서의 정보들을 활용해 해당 MPM Particle에서의 Function Value (== Distance) 와 Gradient(== Normal) 을 Reconstruct
 
   <img src="https://github.com/user-attachments/assets/1184d444-8c70-461a-ab19-012652386603">
+
+
+- Distance와 Normal을 근사하는 Code ( 자꾸 한번씩 nan으로 터지는 원인이 M의 역행렬을 구해주는데 determinant 예외처리를 안해줘서임을 확인, 해줬다)
+```
+Eigen::MatrixXf Q(16, 3);
+Eigen::MatrixXf D(16, 16);
+Eigen::MatrixXf M(3, 3);
+Eigen::VectorXf v(16);
+
+for (int y = bni; y < 3; y++) {
+					for (int x = bni; x < 3; x++) {
+Q(N,0) = 1; Q(N, 1) = -dist[0]; Q(N, 2) = -dist[1];
+D(N,N) = Wip;
+v[N] = mCdf->CDFGrid[i + x][j + y].D_ib[k] * mCdf->CDFGrid[i + x][j + y].T_ib[k];
+}}
+
+M = Q.transpose() * D * Q;
+					
+if(M.determinant() > 0)
+{
+Eigen::Vector3f result = M.inverse() * Q.transpose() * D * v;
+
+particles[p].D_pb[k] = result[0];
+particles[p].N_pb[k] = Vector2f(result[1], result[2]) / (Vector2f(result[1], result[2]).norm());
+int asdf = 0;
+}
+
+```
+
+
  
 	
    

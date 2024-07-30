@@ -880,7 +880,152 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 3. MPM Particle -> Grid 정보 전달 (Compatibility 연산 후 수행 Compatibility는 충돌 여부와 연관 o)
 4. 일반적인 MPM Grid Update 진행
 5. Grid -> MPM Particle 정보 전달 (마찬가지로 Compatibility 연산 후 수행)
-6. Rigid Body Advection, MPM Particle Advection 수행 
+6. Rigid Body Advection, MPM Particle Advection 수행
+
+## 1. Rigid Particle -> Grid 정보 전달
+- A : 그리드 점 에서 해당 Rigid Particle이 속해있는 triangle(2차원의 경우 line) 까지 Distance가 Valid한지 여부 (해당 line으로의 Projection이 그 line 위에 존재 하는지 여부)
+- T : A가 invalid이면 0, line(triangle)의 바깥쪽이면 1, line(triangle)의 안쪽이면 -1
+- D : Distance (절대값)
+- Closest Body : 가장 가까운 RigidBody (하나만)
+- Closest Rigid Particle : Body마다 가장 가까운 RigidParticle 하나씩 기록
+
+```
+void MPMCdf::UpdateCdf(const std::vector<MPMRigidBody*>& inRigidBody)
+	{
+		// Initialize node cdf
+		for(int i=0;i<CDFGrid.size();++i)
+			for (int j = 0; j < CDFGrid.size(); ++j)
+			{
+				MPMCDfNode& node = CDFGrid[i][j];
+
+				for (int k = 0; k < inRigidBody.size(); ++k)
+				{
+					// Initialize A
+					node.A_ib[k] = 0;
+					// Initialize T
+					node.T_ib[k] = 0;
+					// Initialize D
+					node.D_ib[k] = -1;
+					// Initialize ClosestRigidParticle
+					node.ClosestRigidParticle[k] = -1;
+					
+				}
+
+				node.ClosestBody = nullptr;
+			}
+
+		//
+		for (int k = 0; k < inRigidBody.size(); ++k)
+		{
+			for (int p = 0; p < inRigidBody[k]->vec_RigidParticleLocation.size(); ++p)
+			{
+				int index = inRigidBody[k]->vec_RigidParticleLocation[p];
+
+				// Line AB 
+				Vector2f A = inRigidBody[k]->vec_Vertex_World[inRigidBody[k]->vec_Index[index]];
+				Vector2f B = inRigidBody[k]->vec_Vertex_World[inRigidBody[k]->vec_Index[index+1]];
+				
+				Vector2f ba = B - A;
+
+				int y = static_cast<int>((inRigidBody[k]->vec_RigidParticle_World[p][1] - Translation_xp[1]) * H_INV);
+				int x = static_cast<int>((inRigidBody[k]->vec_RigidParticle_World[p][0] - Translation_xp[0]) * H_INV);
+
+				Vector2f base(x, y);
+
+				// Loop over kernel domain
+				for(int i=x-10;i<x+10;++i)
+					for (int j = y-10; j < y+10; ++j)
+					{						
+						if (i >= X_GRID || i < 0 || j >= Y_GRID || j < 0)
+							continue;
+
+						Vector2f pa = Vector2f(i,j) * DX + Translation_xp - A;
+
+						float h = pa.dot(ba) / ba.dot(ba);
+
+						if (h >= 0 && h <= 1)  // node(ij) is valid to line (AB)
+						{
+							CDFGrid[i][j].A_ib[k] = 1;
+							float dist = (pa - h * ba).norm();
+
+							float det = pa[0] * ba[1] - pa[1] * ba[0];
+
+							if (CDFGrid[i][j].T_ib[k] == 0) // Check if it is first input
+							{
+								if (det > 0) // node(ij) is outside of line 
+									CDFGrid[i][j].T_ib[k] = 1;
+
+								else
+									CDFGrid[i][j].T_ib[k] = -1;
+
+								CDFGrid[i][j].D_ib[k] = dist;
+								CDFGrid[i][j].ClosestRigidParticle[k] = p;
+							}
+
+
+							else  // if it's not, check if it has smaller distance
+							{
+								if (dist < CDFGrid[i][j].D_ib[k]) // only update if it is closer to the line
+								{
+									if (det > 0) // node(ij) is outside of line 
+										CDFGrid[i][j].T_ib[k] = 1;
+
+									else
+										CDFGrid[i][j].T_ib[k] = -1;
+
+									CDFGrid[i][j].D_ib[k] = dist;
+									CDFGrid[i][j].ClosestRigidParticle[k] = p;
+								}
+							}
+
+							 
+							
+
+						}
+					}
+			}
+		}
+
+
+
+		for (int i = 0; i < CDFGrid.size(); ++i)
+			for (int j = 0; j < CDFGrid.size(); ++j)
+			{
+				MPMCDfNode& node = CDFGrid[i][j];
+
+				for (int k = 0; k < inRigidBody.size(); ++k)
+				{
+					float d_min = 0;
+
+					if (node.A_ib[k] == 1)
+					{
+						if (node.ClosestBody == nullptr)
+						{
+							d_min = node.D_ib[k];
+							node.ClosestBody = inRigidBody[k];
+						}
+
+						else
+						{
+							if (node.D_ib[k] < d_min)
+							{
+								d_min = node.D_ib[k];
+								node.ClosestBody = inRigidBody[k];
+							}
+								
+						}
+					}
+						
+
+				}
+
+				
+			}
+			
+	}
+}
+```
+
   
     
 

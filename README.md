@@ -873,6 +873,9 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 
 
 ## CDF-MLS-RIGID BODY COUPLING OVERVIEW
+
+<img src="https://github.com/user-attachments/assets/5b3098e4-8dbb-40fc-89cb-c20fe12f615e">
+
 0. Initialize 단계
    - RigidBody의 바운더리를 따라서 RigidParticle 생성
 1. Rigid Particle -> Grid 정보 전달 (A,T,D)

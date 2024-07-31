@@ -1310,6 +1310,8 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
   
      <img src="https://github.com/user-attachments/assets/11ff8a63-9130-4cd4-8284-a51c9f50f03a">
 
+- orientation 적용 실험에 cos(PI)을 넣으면 문제가 생기나 -1을 넣으면 정상적으로 동작하는것을 확인
+
 
 
     

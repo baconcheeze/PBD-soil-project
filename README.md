@@ -1297,8 +1297,18 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 3. GPU로 옮기는 작업 후 테스트, 이 후 3D로 옮기는 작업
 
 4. 최적화 방법을 최대한 적용해본다
-   - "Principles towards Real-Time Simulation of Material Point Method on Modern GPUs (GDC and GTC 2022)" 공부하기 
+   - "Principles towards Real-Time Simulation of Material Point Method on Modern GPUs (GDC and GTC 2022)" 공부하기
    
+## 07.30
+- 경계면의 바깥쪽(빨간색)과 안쪽(파란색)은 부호만 다를뿐 완전히 같은 동작을 해야하기 때문에 같은 상황에서 똑같은 결과가 나와야 하는데 바깥쪽 면은 정상적으로 모래를 밀어내나, 안쪽 면은 모래가 뚫고 지나가는 문제가 있어 해결중입니다.
+
+- 정상 작동
+  
+     <img src="https://github.com/user-attachments/assets/eb879a64-2eb1-4dd9-adbf-0a3470910aa3">
+
+- 문제 발생
+  
+     <img src="https://github.com/user-attachments/assets/11ff8a63-9130-4cd4-8284-a51c9f50f03a">
 
 
 

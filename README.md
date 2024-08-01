@@ -1316,7 +1316,7 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 - 이틀동안 골머리를 앓던 문제 세개 해결
   1. Rigid Body에 적용되던 Angular Advection이 여러번 테스트를 돌릴때마다 결과가 다르게 나오고. 그 결과가 물리적으로 올바르지 않아 보이던 문제.
 
-기존의 다음과 같이 (이전 프레임 파티클 Velocity - 이번 프레임 파티클 Velocity) Momentum을 계산하던것을. 
+기존의 다음과 같이 (이전 프레임 파티클 Velocity - 이번 프레임 파티클 Velocity)로 Momentum을 계산하던것을. 
  
 ```
 //Angular Momentum

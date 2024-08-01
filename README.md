@@ -1312,6 +1312,65 @@ Paricle Count : 7000 , dt: 0.005, 중력가속도: -10 , 1 frame 경과 시간 4
 
 - orientation 적용 실험에 cos(PI)을 넣으면 문제가 생기나 -1을 넣으면 정상적으로 동작하는것을 확인
 
+## 07.31 
+- 이틀동안 골머리를 앓던 문제 세개 해결
+  1. Rigid Body에 적용되던 Angular Advection이 여러번 테스트를 돌릴때마다 결과가 다르게 나오고. 그 결과가 물리적으로 올바르지 않아 보이던 문제.
 
+기존의 다음과 같이 (이전 프레임 파티클 Velocity - 이번 프레임 파티클 Velocity) Momentum을 계산하던것을. 
+ 
+```
+//Angular Momentum
+Vector2f rp = body->vec_RigidParticle_World[p] - body->Translation;
+Vector2f mvp = Wip * particles[p].Mp * (particles[p].Vp - Velocity);
+AngularMomentum += rp[0] * mvp[1] - rp[1] * mvp[0];
+```
+
+(이번 프레임의 응력과 중력가속도가 적용된 Velocity - 이번 프레임 최종 파티클 Velocity) 로 Momentum을 계산해줬더니 훨씬 그럴듯하고 안정적인 결과가 나옴
+
+```
+//Angular Momentum
+Vector2f rp = body->vec_RigidParticle_World[p] - body->Translation;
+Vector2f mvp = Wip * particles[p].Mp * (nodes[node_id].Vi_norigid - Velocity);// (originalvel - Velocity);
+AngularMomentum += rp[0] * mvp[1] - rp[1] * mvp[0];
+```
+
+2. Orientation 계산할때의 조그마한 오차가 큰 오류를 발생시키는 문제 (ex) orientation 계산에 cos(PI)를 넣을때와 -1를 넣을때 결과가 크게 차이남.
+
+CDF Grid의 T를 계산할때 기존의 determinant가 0보다 크면 오른쪽에 있다고 판정을 내리고 T를 1로 주던 코드를 determinant가 epsilon(1e-5)보다 크면 오른쪽에 있다고 판정을 내리는 코드로 바꿨더니 해결
+
+```
+float det = pa[0] * ba[1] - pa[1] * ba[0];
+
+if (CDFGrid[i][j].T_ib[k] == 0) // Check if it is first input
+{
+	if (det > epsilon) // node(ij) is outside of line 
+		CDFGrid[i][j].T_ib[k] = 1;
+
+	else
+		CDFGrid[i][j].T_ib[k] = -1;
+}
+```
+
+3. 이틀 내내 고민했던 가장 까다로웠던 문제인 물체의 정가운데에 모래를 떨어뜨릴때 물체의 수평이 유지되지 않고 모래가 물체를 뚫고 들어가는 advection error가 쌓이다가 simulation이 터져버리는 문제
+   G2P 단계에서 Compatibility 체크를 할때  || (particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0) 조건 한줄 추가해준것으로 문제가 해결됐으나
+   왜, 어떤 원리때문에 문제가 해결된것인지는 모름. 그냥 됨.
+   
+
+```
+if ((particles[p].T_pb[k] > 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] > 0)
+|| (particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0)
+|| particles[p].T_pb[k] * mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] == 0)
+	continue;
+```
+
+- 수정 전
+
+   <img src="https://github.com/user-attachments/assets/7a44d04b-a6e5-44f9-9857-5ac6ae78a6b1">
+
+- 수정 후
+
+   <img src="https://github.com/user-attachments/assets/e8126edd-982b-4a21-9465-d3d54a8567cb">
+
+- 여전히 Advection error로 물체를 뚫고 지나가는 부분이 보이나 이를 파티클을 물체 바깥으로 밀어주는 Penalty Force를 줘서 error 수정중, error를 완전히 줄이기 위해 Penalty Force의 계수를 늘리면 물체 위에 쌓여있던 모래입자들이 어느 순간 펑 하고 터져버리는 문제가 발생한다.   
 
     

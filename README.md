@@ -1352,6 +1352,7 @@ if (CDFGrid[i][j].T_ib[k] == 0) // Check if it is first input
 ```
 
 3. 이틀 내내 고민했던 가장 까다로웠던 문제인 물체의 정가운데에 모래를 떨어뜨릴때 물체의 수평이 유지되지 않고 모래가 물체를 뚫고 들어가는 advection error가 쌓이다가 simulation이 터져버리는 문제
+   
    G2P 단계에서 Compatibility 체크를 할때  || (particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0) 조건 한줄 추가해준것으로 문제가 해결됐으나
    왜, 어떤 원리때문에 문제가 해결된것인지는 모름. 그냥 됨.
    

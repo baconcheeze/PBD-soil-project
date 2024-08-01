@@ -1374,4 +1374,294 @@ if ((particles[p].T_pb[k] > 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y]
 
 - 여전히 Advection error로 물체를 뚫고 지나가는 부분이 보이나 이를 파티클을 물체 바깥으로 밀어주는 Penalty Force를 줘서 error 수정중, error를 완전히 줄이기 위해 Penalty Force의 계수를 늘리면 물체 위에 쌓여있던 모래입자들이 어느 순간 펑 하고 터져버리는 문제가 발생한다.   
 
-    
+    ## 08.01
+  - Stability 향상을 위한 G2P 코드의 두가지 중요한 변경점
+    1. RigidBody Collision 적용 Particle 최종 Velocity 계산 -> RigidBody Momentum 계산 -> Rigid Body advection, Sand Particle Advection 의 단계로 이루어지던걸
+       Collision 적용 Particle Velocity 계산 -> Rigid Momentum 계산 -> Rigid Body Advection -> Advection이 된 RigidBody의 Velocity를 사용해서 다시한번 Collision 적용 Particle Velocity 재계산 의 단계를 한번 더 거쳤다.
+
+    2. Compatibility Check 단계에서 (particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0) 인 경우 flag에 -1을 주고 flag가 -1인 경우 Grid Velocity = 충돌중인 RigidParticle의 Velocity로 해줬다.
+   
+- G2P 최종코드
+
+```
+// Transfer from Grid nodes to Particles
+	template <typename Type> void Solver<Type>::G2P() {
+
+		AngularMomentum = 0;
+
+#pragma omp parallel for
+		for (int p = 0; p < plen; p++) {
+
+			// Index of bottom-left node closest to the particle
+			int node_base_X = static_cast<int>((particles[p].Xp[0] - Translation_xp[0]) * H_INV);
+			int node_base_Y = static_cast<int>((particles[p].Xp[1] - Translation_xp[1]) * H_INV);
+			int node_base = (X_GRID + 1) * node_base_Y + node_base_X;
+
+			// Set velocity and velocity field to 0 for sum update
+			Vector2f newV = Vector2f(0);
+			Vector2f NoCollisionV = Vector2f(0);
+			Matrix2f NewC = Matrix2f(0);
+
+			// Loop over all the close nodes (depend on interpolation through bni)
+			for (int y = bni; y < 3; y++) {
+				for (int x = bni; x < 3; x++) {
+					// Index of the node
+					int node_id = node_base + x + (X_GRID + 1) * y;
+
+#ifdef Exception
+					if (node_base_X + x > X_GRID || node_base_X + x<0 || node_base_Y + y > Y_GRID || node_base_Y + y < 0)
+						continue;
+#endif
+
+					// Distance and weight
+					Vector2f dist = particles[p].Xp - nodes[node_id].Xi;
+					float Wip = getWip(dist);
+
+					// Check Compatibility
+					int flag = 1;
+					// For All Bodies
+					for (int k = 0; k < RigidBodies.size(); ++k)
+					{
+
+						if ((particles[p].T_pb[k] > 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] > 0)
+							|| (particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0)
+							|| particles[p].T_pb[k] * mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] == 0)
+						{
+							if ((particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0))
+								flag = -1;
+
+							continue;
+						}
+
+
+
+						else
+							flag = 0;
+
+					}
+
+
+					// RigidBody Coupling Velocity Update
+					Vector2f Velocity = Vector2f(0, 0);
+
+					if (flag == 0 || flag == -1)// incompatible (which means collisiion occured)
+					{
+						MPMRigidBody* body = mCdf->CDFGrid[node_base_X + x][node_base_Y + y].ClosestBody;
+						int p = mCdf->CDFGrid[node_base_X + x][node_base_Y + y].ClosestRigidParticle[0];
+						int index_A = body->vec_Index[body->vec_RigidParticleLocation[p]];
+						int index_B = body->vec_Index[body->vec_RigidParticleLocation[p] + 1];
+
+						Vector2f A = body->vec_Vertex_World[index_A];
+						Vector2f B = body->vec_Vertex_World[index_B];
+
+						Vector2f line = (B - A) / (B - A).norm();
+						Vector2f pa = particles[p].Xp - A;
+						Vector2f np = Vector2f(line[1], -line[0]); //pa - pa.dot(line) * line; //	Vector2f(line[1], -line[0]);	
+
+
+						Vector2f originalvel = particles[p].Vp;//nodes[node_id].Vi_fri;//
+
+						float sg = (originalvel - body->vec_RigidParticleVelocity[p]).dot(np); // 노멀 방향 상대속도
+
+
+
+						if (sg > 0) // 벗어나는중
+							Velocity = originalvel;
+
+						else // Approaching
+						{
+							float _dynamic_friction_coefficient = 0.9;
+
+							Vector2f vt = (originalvel - body->vec_RigidParticleVelocity[p]).dot(line) * line;
+							float xi = vt.norm() + _dynamic_friction_coefficient * sg;
+							if (xi < 0)
+								xi = 0;
+							//Velocity =  vt / (vt.norm() + 0.00000001)* xi + body->vec_RigidParticleVelocity[p];
+							Velocity = body->vec_RigidParticleVelocity[p];//Vector2f(0);// body->vec_RigidParticleVelocity[p];
+						}
+
+						if (flag == -1)
+							Velocity = body->vec_RigidParticleVelocity[p];
+
+						//Angular Momentum
+						Vector2f rp = body->vec_RigidParticle_World[p] - body->Translation;
+						Vector2f mvp = Wip * particles[p].Mp * (nodes[node_id].Vi_norigid - Velocity);// (originalvel - Velocity);
+						AngularMomentum += rp[0] * mvp[1] - rp[1] * mvp[0];
+					}
+
+
+
+
+
+				}
+
+#ifdef Penalty
+				//Penalty Force				
+				for (int k = 0; k < RigidBodies.size(); ++k)
+				{
+					if (particles[p].T_pb[k] == -1)
+					{
+						Vector2f normal = -sin(RigidBodies[0]->Orientation), cos(RigidBodies[0]->Orientation);
+						auto penalty = particles[p].N_pb[k] * 500;
+						//penalty = normal * 500;
+
+						Vector2f rp = particles[p].Xp - RigidBodies[0]->Translation;
+						Vector2f mvp = -particles[p].Mp * penalty * DeltaTime;
+						AngularMomentum += rp[0] * mvp[1] - rp[1] * mvp[0];
+
+					}
+				}
+#endif
+
+			}
+		}
+
+		//Rigid Body Advection
+		RigidBodies[0]->Angular_Velocity += AngularMomentum / (RigidBodies[0]->Inertia);
+		RigidBodies[0]->RecalculateVelocity();
+
+
+#pragma omp parallel for
+		for (int p = 0; p < plen; p++) {
+
+			// Index of bottom-left node closest to the particle
+			int node_base_X = static_cast<int>((particles[p].Xp[0] - Translation_xp[0]) * H_INV);
+			int node_base_Y = static_cast<int>((particles[p].Xp[1] - Translation_xp[1]) * H_INV);
+			int node_base = (X_GRID + 1) * node_base_Y + node_base_X;
+
+			// Set velocity and velocity field to 0 for sum update
+			Vector2f newV = Vector2f(0);
+			Vector2f NoCollisionV = Vector2f(0);
+			Matrix2f NewC = Matrix2f(0);
+
+			// Loop over all the close nodes (depend on interpolation through bni)
+			for (int y = bni; y < 3; y++) {
+				for (int x = bni; x < 3; x++) {
+					// Index of the node
+					int node_id = node_base + x + (X_GRID + 1) * y;
+
+#ifdef Exception
+					if (node_base_X + x > X_GRID || node_base_X + x<0 || node_base_Y + y > Y_GRID || node_base_Y + y < 0)
+						continue;
+#endif
+
+					// Distance and weight
+					Vector2f dist = particles[p].Xp - nodes[node_id].Xi;
+					float Wip = getWip(dist);
+
+					// Check Compatibility
+					int flag = 1;
+					// For All Bodies
+					for (int k = 0; k < RigidBodies.size(); ++k)
+					{
+
+						if ((particles[p].T_pb[k] > 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] > 0)
+							|| (particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0)
+							|| particles[p].T_pb[k] * mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] == 0)
+						{
+							if ((particles[p].T_pb[k] < 0 && mCdf->CDFGrid[node_base_X + x][node_base_Y + y].T_ib[k] < 0))
+								flag = -1;
+
+							continue;
+						}
+
+
+
+
+						else
+							flag = 0;
+
+					}
+
+
+					// RigidBody Coupling Velocity Update
+					Vector2f Velocity = Vector2f(0, 0);
+
+					if (flag == 0 || flag == -1) // incompatible (which means collisiion occured)
+					{
+						MPMRigidBody* body = mCdf->CDFGrid[node_base_X + x][node_base_Y + y].ClosestBody;
+						int p = mCdf->CDFGrid[node_base_X + x][node_base_Y + y].ClosestRigidParticle[0];
+						int index_A = body->vec_Index[body->vec_RigidParticleLocation[p]];
+						int index_B = body->vec_Index[body->vec_RigidParticleLocation[p] + 1];
+
+						Vector2f A = body->vec_Vertex_World[index_A];
+						Vector2f B = body->vec_Vertex_World[index_B];
+
+						Vector2f line = (B - A) / (B - A).norm();
+						Vector2f pa = particles[p].Xp - A;
+						Vector2f np = Vector2f(line[1], -line[0]); //pa - pa.dot(line) * line; //	Vector2f(line[1], -line[0]);	
+
+
+						Vector2f originalvel = nodes[node_id].Vi_fri; //particles[p].Vp;//nodes[node_id].Vi_norigid;// 
+
+						float sg = (originalvel - body->vec_RigidParticleVelocity[p]).dot(np); // 노멀 방향 상대속도
+
+
+
+						if (sg > 0) // 벗어나는중
+							Velocity = originalvel;
+
+						else // Approaching
+						{
+							float _dynamic_friction_coefficient = 0.9;
+
+							Vector2f vt = (originalvel - body->vec_RigidParticleVelocity[p]).dot(line) * line;
+							float xi = vt.norm() + _dynamic_friction_coefficient * sg;
+							if (xi < 0)
+								xi = 0;
+							//Velocity =  vt / (vt.norm() + 0.00000001)* xi + body->vec_RigidParticleVelocity[p];
+							Velocity = body->vec_RigidParticleVelocity[p];//Vector2f(0);// body->vec_RigidParticleVelocity[p];
+						}
+
+						if (flag == -1)
+							Velocity = body->vec_RigidParticleVelocity[p];
+					}
+
+					else
+						Velocity = nodes[node_id].Vi_fri;
+
+
+
+
+					// Update velocity and velocity field (APIC)
+					newV += Wip * Velocity;
+					NewC += Wip * Dp_scal * H_INV * (Velocity.outer_product(-dist));
+				}
+
+				particles[p].Vp = newV;
+				particles[p].Cp = NewC;
+
+#ifdef Penalty
+				//Penalty Force
+
+				for (int k = 0; k < RigidBodies.size(); ++k)
+				{
+					if (particles[p].T_pb[k] == -1)
+					{
+						Vector2f normal = -sin(RigidBodies[0]->Orientation), cos(RigidBodies[0]->Orientation);
+
+						auto penalty = particles[p].N_pb[k] * 5000;
+
+						//penalty = normal * 500;
+
+						//particles[p].Vp += penalty * DeltaTime; 
+
+
+					}
+				}
+
+#endif
+
+
+				if (isnan(particles[p].Vp[0]) || isnan(particles[p].Vp[1]))
+				{
+					particles[p].Vp = Vector2f(0);
+					particles[p].Cp = Matrix2f(0);
+				}
+
+			}
+		}
+
+
+	}
+```
